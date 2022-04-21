@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Local Apps
     'accounts',
     'events',
+    'payments',
 
     # Third Party Apps
     'rest_framework'
