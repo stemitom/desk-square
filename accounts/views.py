@@ -14,3 +14,7 @@ class SignupView(generics.CreateAPIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = LogInSerializer
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user

@@ -6,7 +6,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-    group = serializers.CharField()
 
     def validate(self, data):
         if data["password1"] != data["password2"]:
@@ -33,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'username',
+            'email',
             'password1',
             'password2',
             'first_name',
