@@ -20,7 +20,7 @@ class User(AbstractUser):
         },
     )
 
-    email = models.CharField(
+    email = models.EmailField(
         _("email address"),
         max_length=100,
         unique=True,
