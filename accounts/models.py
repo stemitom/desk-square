@@ -33,7 +33,11 @@ class User(AbstractUser):
     )
 
     first_name = models.CharField(
-        _("username"), max_length=100, blank=False, null=False
+        _("first name"), max_length=100, blank=False, null=False
+    )
+
+    last_name = models.CharField(
+        _("last name"), max_length=100, blank=False, null=False
     )
 
     is_email_verified = models.BooleanField(_("is_email_verified"), default=False)
@@ -56,14 +60,6 @@ class User(AbstractUser):
         return self.email
 
     objects = UserManager()
-
-    @property
-    def is_staff(self) -> bool:
-        return self.is_staff
-
-    @property
-    def is_admin(self) -> bool:
-        return self.is_admin
 
     @property
     def profile_url(self) -> str:
