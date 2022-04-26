@@ -1,10 +1,14 @@
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import generics, permissions, viewsets
+
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import UserSerializer, LogInSerializer
-from .models import User
 
 # Create your views here.
 class SignupView(generics.CreateAPIView):
@@ -18,3 +22,23 @@ class LoginView(TokenObtainPairView):
 
     def get_object(self):
         return self.request.user
+
+
+class LogoutView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(status.HTTP_205_RESET_CONTENT)
+        except:
+            return Response(status.HTTP_400_BAD_REQUEST)
+
+
+class ListUsersView(generics.ListAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
