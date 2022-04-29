@@ -37,6 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
             'password2',
             'first_name',
             'last_name',
+            'is_email_verified',
+            'email_verified_at',
         )
 
 
