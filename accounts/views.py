@@ -38,6 +38,20 @@ class LogoutView(APIView):
             return Response(status.HTTP_400_BAD_REQUEST)
 
 
+class ActivateAccountView:
+    pass
+
+
+class PasswordChangeView:
+    pass
+
+
+class PasswordResetView:
+    pass
+
+
+
+
 class ListUsersView(generics.ListAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
