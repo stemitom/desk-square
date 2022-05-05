@@ -26,17 +26,20 @@ class LoginView(TokenObtainPairView):
 
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request):
         try:
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
             token.blacklist()
-
             return Response(status.HTTP_205_RESET_CONTENT)
         except:
             return Response(status.HTTP_400_BAD_REQUEST)
 
+
+class ListUsersView(generics.ListAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 class ActivateAccountView:
     pass
@@ -51,8 +54,3 @@ class PasswordResetView:
 
 
 
-
-class ListUsersView(generics.ListAPIView):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
