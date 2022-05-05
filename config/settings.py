@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'payments',
 
     # Third Party Apps
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
