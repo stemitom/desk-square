@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 class Events(models.Model):
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False
     )
     title = models.CharField(_("title"), max_length=500)
     descriptiion = models.CharField(_("description"), max_length=5000)
@@ -25,5 +25,19 @@ class Events(models.Model):
         return f"{self.title}"
 
 
-class Tickets(models.Model):
-    pass
+# class Tickets(models.Model):
+#     # category = models.TextChoices()
+
+
+# class Category(models.Model):
+#     event = models.ForeignKey(
+#         Events,
+#         on_delete=models.CASCADE,
+#         null=False
+#     )
+#     ticket = models.ForeignKey(
+#         Tickets,
+#         on_delete=models.CASCADE,
+#         null=False
+#     )
+    
