@@ -9,7 +9,7 @@ class Events(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False
     )
     title = models.CharField(_("title"), max_length=500)
-    descriptiion = models.CharField(_("description"), max_length=5000)
+    description = models.CharField(_("description"), max_length=5000)
     place = models.CharField(
         _("place"),
         max_length=500,
