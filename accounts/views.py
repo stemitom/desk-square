@@ -1,44 +1,47 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import status
+from rest_framework import status, generics, permissions
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import generics, permissions, viewsets
-
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserSerializer, LogInSerializer
+from .serializers import UserSerializer, LogInSerializer, RefreshTokenSerializer
 
-# Create your views here.
+
 class SignupView(generics.CreateAPIView):
-    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+    queryset = get_user_model().objects.all()
 
 
 class LoginView(TokenObtainPairView):
     serializer_class = LogInSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
 
 
-class LogoutView(APIView):
+class LogoutView(GenericAPIView):
+    serializer_class = RefreshTokenSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        refresh_token = request.data["refresh"]
-        print(refresh_token)
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-        return Response(status.HTTP_205_RESET_CONTENT)
+    def post(self, request, *args):
+        sz = self.get_serializer(data=request.data)
+        sz.is_valid(raise_exception=True)
+        sz.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ListUsersView(generics.ListAPIView):
-    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        User = get_user_model()
+        return User.objects.exclude(email=self.request.user.email)
+
+    def list(self, request, *args, **kwargs):
+        print(request.user.email)
+        return super().list(request, *args, **kwargs)
 
 
 class ActivateAccountView:
