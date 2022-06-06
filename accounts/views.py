@@ -26,18 +26,20 @@ class LoginView(TokenObtainPairView):
 
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request):
         refresh_token = request.data["refresh"]
         print(refresh_token)
         token = RefreshToken(refresh_token)
         token.blacklist()
         return Response(status.HTTP_205_RESET_CONTENT)
-        
+
 
 class ListUsersView(generics.ListAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
 
 class ActivateAccountView:
     pass

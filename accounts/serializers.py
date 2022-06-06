@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
                 "password2",
             )
         }
-        data['password'] = validated_data['password1']
+        data["password"] = validated_data["password1"]
         user = self.Meta.model.objects.create_user(**data)
         user.save()
         return user
@@ -30,15 +30,15 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
-            'id',
-            'username',
-            'email',
-            'password1',
-            'password2',
-            'first_name',
-            'last_name',
-            'is_email_verified',
-            'email_verified_at',
+            "id",
+            "username",
+            "email",
+            "password1",
+            "password2",
+            "first_name",
+            "last_name",
+            "is_email_verified",
+            "email_verified_at",
         )
 
 
@@ -48,6 +48,6 @@ class LogInSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         user_data = UserSerializer(user).data
         for key, value in user_data.items():
-            if key != 'id':
+            if key != "id":
                 token[key] = value
         return token
