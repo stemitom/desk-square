@@ -98,31 +98,30 @@ class ActivateAccountSerializer(serializers.Serializer):
         return user
 
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
-    old_pw = serializers.CharField(required=True)
+class ChangePasswordSerializer(serializers.Serializer):
+    old_pw = serializers.CharField(write_only=True, required=True)
     new_pw = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
     )
     new_pw_conf = serializers.CharField(write_only=True, required=True)
 
-    def validate_old_pw(self, old_pw):
-        user = self.context["request"].user
-        if not user.check_password(old_pw):
-            raise serializers.ValidationError(
-                "Old password is not correct. Please check and try again!"
-            )
-        return old_pw
-
     def validate(self, data):
+        user = self.context["request"].user
+        if not user.check_password(data["old_pw"]):
+            raise serializers.ValidationError(
+                "Password is incorrect. Please check and try again!"
+            )
         if data["new_pw"] != data["new_pw_conf"]:
             raise serializers.ValidationError("Passwords must match")
+        if data["new_pw"] == data["old_pw"]:
+            raise serializers.ValidationError(
+                "Old and New pasword cannot be the same. Please check and try again"
+            )
         return data
 
-    def update(self, instance, validated_data):
-        instance.set_password(validated_data["new_pw"])
-        instance.save()
-        return instance
-
-    class Meta:
-        model = get_user_model()
-        fields = ("old_pw", "new_pw", "new_pw_conf")
+    def save(self, **kwargs):
+        password = self.validated_data["new_pw"]
+        user = self.context["request"].user
+        user.set_password(password)
+        user.save()
+        return user
