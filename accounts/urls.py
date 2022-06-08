@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 app_name = "accounts"
@@ -32,5 +33,10 @@ urlpatterns = [
         "activate",
         views.ActivateAccountView.as_view(),
         name="activate",
+    ),
+    path(
+        "reset_pw",
+        views.ChangePasswordView.as_view(),
+        name="reset_password",
     ),
 ]

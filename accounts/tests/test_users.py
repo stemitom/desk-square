@@ -1,11 +1,10 @@
 from functools import partial
 
-from rest_framework.test import APITestCase
+from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

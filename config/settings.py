@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import environ
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
+import environ
 
 env = environ.Env(
     # set casting, default value

@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
-
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -64,13 +64,11 @@ class LogInSerializer(TokenObtainPairSerializer):
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
-    default_error_messages = {
-        "bad_token": _("Token is invalid or expired"),
-    }
+    default_error_messages = {"bad_token": "Token is invalid or expired"}
 
-    def validate(self, attrs):
-        self.token = attrs["refresh"]
-        return attrs
+    def validate(self, data):
+        self.token = data["refresh"]
+        return data
 
     def save(self, **kwargs):
         try:
@@ -83,9 +81,9 @@ class ActivateAccountSerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
 
-    def validate(self, attrs):
-        uid = attrs["uid"]
-        token = attrs["token"]
+    def validate(self, data):
+        uid = data["uid"]
+        token = data["token"]
 
         User = get_user_model()
         try:
@@ -98,3 +96,33 @@ class ActivateAccountSerializer(serializers.Serializer):
         if not activation_token.check_token(user, token):
             raise serializers.ValidationError("Given token is wrong")
         return user
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    old_pw = serializers.CharField(required=True)
+    new_pw = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+    new_pw_conf = serializers.CharField(write_only=True, required=True)
+
+    def validate_old_pw(self, old_pw):
+        user = self.context["request"].user
+        if not user.check_password(old_pw):
+            raise serializers.ValidationError(
+                "Old password is not correct. Please check and try again!"
+            )
+        return old_pw
+
+    def validate(self, data):
+        if data["new_pw"] != data["new_pw_conf"]:
+            raise serializers.ValidationError("Passwords must match")
+        return data
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data["new_pw"])
+        instance.save()
+        return instance
+
+    class Meta:
+        model = get_user_model()
+        fields = ("old_pw", "new_pw", "new_pw_conf")
