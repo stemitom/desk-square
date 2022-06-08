@@ -2,10 +2,9 @@ from logging import getLogger
 
 from django.core.mail import send_mail
 from django.urls import reverse
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
-from .models import User
 from .tokens import account_activation_token, account_password_reset_token
 
 logger = getLogger(__name__)
@@ -20,15 +19,15 @@ def create_account_activation_url(uid, token, request):
 
 
 def send_verification_email(
-    user, request, sender, subject="Verify your email", message=""
+    user, request, sender=None, subject="Verify your email", message=""
 ):
-    uid = urlsafe_base64_decode(force_bytes(user.pk))
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = account_activation_token.make_token(user)
     message += create_account_activation_url(uid, token, request)
     send_mail(
-        "Subject here",
-        "Here is the message.",
-        "from@example.com",
+        f"{subject}",
+        f"{message}",
+        f"from@example.com",
         ["to@example.com"],
         fail_silently=False,
     )

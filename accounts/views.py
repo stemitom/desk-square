@@ -13,6 +13,8 @@ from .serializers import (
     RefreshTokenSerializer,
 )
 
+from .utils import send_verification_email
+
 
 class ListUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
@@ -46,6 +48,19 @@ class LogoutView(GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class RequestActivationView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, *args):
+        send_verification_email(request.user, request)
+        return Response(
+            {
+                "message": "Email verification sent to email! Check your email and use the link to verify your account"
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class ActivateAccountView(APIView):
     serializer_class = ActivateAccountSerializer
     permission_classes = (permissions.AllowAny,)
@@ -54,6 +69,11 @@ class ActivateAccountView(APIView):
         serializer = ActivateAccountSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        if user.is_email_verified:
+            return Response(
+                {"message": "Account has already been activated!"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         user.is_email_verified = True
         user.save()
 

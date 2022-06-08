@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.utils.encoding import force_bytes, force_str
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 
@@ -63,7 +64,9 @@ class LogInSerializer(TokenObtainPairSerializer):
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
-    default_error_messages = {"bad_token": _("Token is invalid or expired")}
+    default_error_messages = {
+        "bad_token": _("Token is invalid or expired"),
+    }
 
     def validate(self, attrs):
         self.token = attrs["refresh"]

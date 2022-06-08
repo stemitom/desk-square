@@ -24,6 +24,11 @@ urlpatterns = [
         name="list_users",
     ),
     path(
+        "request_activation",
+        views.RequestActivationView.as_view(),
+        name="request_activation",
+    ),
+    path(
         "activate",
         views.ActivateAccountView.as_view(),
         name="activate",
