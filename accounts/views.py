@@ -12,7 +12,7 @@ from .serializers import (
     RefreshTokenSerializer,
     UserSerializer,
 )
-from .utils import send_verification_email
+from .utils import send_tokenified_email
 
 
 class ListUsersView(generics.ListAPIView):
@@ -51,7 +51,7 @@ class RequestActivationView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args):
-        send_verification_email(request.user, request)
+        send_tokenified_email(request.user, request, ctx="activation")
         return Response(
             {
                 "message": "Email verification sent to email! Check your email and use the link to verify your account"
@@ -97,5 +97,24 @@ class ChangePasswordView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PasswordResetView:
-    pass
+class RequestPasswordResetView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, *args):
+        data = request.data
+        try:
+            email = data["email"]
+            print(email)
+        except KeyError:
+            return Response(
+                {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            User = get_user_model()
+            user = User.objects.filter(email=email).first()
+            if user:
+                send_tokenified_email(user, request, ctx="passwordReset")
+        return Response(
+            {"message": "Please do check your email for further instructions!"},
+            status=status.HTTP_200_OK,
+        )

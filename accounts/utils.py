@@ -18,11 +18,24 @@ def create_account_activation_url(uid, token, request):
     return f"{protocol}://{host}{endpoint}?uid={uid}&token={token}"
 
 
-def send_verification_email(
-    user, request, sender=None, subject="Verify your email", message=""
+def send_tokenified_email(
+    user,
+    request,
+    ctx,
+    sender=None,
+    subject="Verify your email",
+    message="",
 ):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = account_activation_token.make_token(user)
+
+    if ctx == "activation":
+        token = account_activation_token
+        message = "This is your email activation link: "
+    elif ctx == "passwordReset":
+        token = account_password_reset_token
+        message = "This is your password reset link: "
+
+    token = token.make_token(user)
     message += create_account_activation_url(uid, token, request)
     send_mail(
         f"{subject}",
