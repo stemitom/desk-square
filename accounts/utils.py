@@ -22,8 +22,8 @@ def send_tokenified_email(
     user,
     request,
     ctx,
+    subject,
     sender=None,
-    subject="Verify your email",
     message="",
 ):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -31,9 +31,11 @@ def send_tokenified_email(
     if ctx == "activation":
         token = account_activation_token
         message = "This is your email activation link: "
+        subject = "Request for Account Verification"
     elif ctx == "passwordReset":
         token = account_password_reset_token
         message = "This is your password reset link: "
+        subject = "Request for Password Reset"
 
     token = token.make_token(user)
     message += create_account_activation_url(uid, token, request)

@@ -8,7 +8,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from accounts.tokens import UserActivationTokenGenerator
+from accounts.tokens import PasswordResetTokenGenerator, UserActivationTokenGenerator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -125,3 +125,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    pass

@@ -10,6 +10,7 @@ from .serializers import (
     ChangePasswordSerializer,
     LogInSerializer,
     RefreshTokenSerializer,
+    ResetPasswordSerializer,
     UserSerializer,
 )
 from .utils import send_tokenified_email
@@ -60,18 +61,18 @@ class RequestActivationView(APIView):
         )
 
 
-class ActivateAccountView(APIView):
+class ActivateAccountView(GenericAPIView):
     serializer_class = ActivateAccountSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, *args):
-        serializer = ActivateAccountSerializer(data=request.query_params)
+        serializer = self.get_serializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         if user.is_email_verified:
             return Response(
                 {"message": "Account has already been activated!"},
-                status=status.HTTP_403_FORBIDDEN,
+                status=status.HTTP_409,
             )
         user.is_email_verified = True
         user.save()
@@ -84,11 +85,12 @@ class ActivateAccountView(APIView):
         )
 
 
-class ChangePasswordView(APIView):
+class ChangePasswordView(GenericAPIView):
+    serializer_class = ChangePasswordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def put(self, request, *args):
-        serializer = ChangePasswordSerializer(
+        serializer = self.get_serializer(
             data=request.data, context={"request": request}
         )
         if serializer.is_valid():
@@ -118,3 +120,7 @@ class RequestPasswordResetView(APIView):
             {"message": "Please do check your email for further instructions!"},
             status=status.HTTP_200_OK,
         )
+
+
+class ResetPasswordView(APIView):
+    pass
