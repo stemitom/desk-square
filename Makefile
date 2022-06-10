@@ -6,7 +6,7 @@ help: ## Show this help
 
 .PHONY: venv
 poetry: ## Make a new virtual environment
-	python3 -m pip install poetry 
+	python -m pip install --upgrade poetry 
 
 .PHONY: activate	
 activate: ## Activate the created environment
