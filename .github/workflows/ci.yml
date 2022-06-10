@@ -1,0 +1,25 @@
+name: Run Django tests
+on:
+  push:
+    branches:
+      - main
+
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install poetry
+        run: |
+          make venv
+      - name: Install dependencies
+        run: |
+          make install
+      - name: Run tests
+        run: |
+          make test
