@@ -15,26 +15,57 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Events',
+            name="Events",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=500, verbose_name='title')),
-                ('description', models.CharField(max_length=5000, verbose_name='description')),
-                ('place', models.CharField(max_length=500, verbose_name='place')),
-                ('start_date', models.DateTimeField(verbose_name='start date')),
-                ('end_date', models.DateTimeField(verbose_name='end date')),
-                ('url', models.CharField(max_length=500, verbose_name='url')),
-                ('creator', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=500, verbose_name="title")),
+                (
+                    "description",
+                    models.CharField(max_length=5000, verbose_name="description"),
+                ),
+                ("place", models.CharField(max_length=500, verbose_name="place")),
+                ("start_date", models.DateTimeField(verbose_name="start date")),
+                ("end_date", models.DateTimeField(verbose_name="end date")),
+                ("url", models.CharField(max_length=500, verbose_name="url")),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ('start_date',),
+                "ordering": ("start_date",),
             },
         ),
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.events')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.events"
+                    ),
+                ),
             ],
         ),
     ]
