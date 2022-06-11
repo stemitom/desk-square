@@ -10,10 +10,24 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from accounts.tokens import PasswordResetTokenGenerator, UserActivationTokenGenerator
 
+User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+    email = serializers.CharField()
+    username = serializers.CharField()
+
+    def validate_email(self, email):
+        if User.objects.filter(email__iexact=email).exists():
+            raise serializers.ValidationError("That email is not available")
+        return email
+
+    def validate_username(self, username):
+        if User.objects.filter(username__iexact=username).exists():
+            raise serializers.ValidationError("That username is not available")
+        return username
 
     def validate(self, data):
         if data["password1"] != data["password2"]:
