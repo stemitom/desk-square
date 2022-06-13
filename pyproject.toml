@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "desk-square"
 version = "0.1.0"
-description = "API for an event management tool (ex. Meetup and EvenBrite) written in drf django."
+description = "API for an event management tool (ex. Meetup and EventBrite) written in drf django."
 authors = ["Temiloluwa Samuel <65780579+stemitom@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
