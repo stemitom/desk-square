@@ -1,5 +1,11 @@
 FROM python:3.9-slim-buster
 
+# install psycopg2-binary
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc \
+    && pip install psycopg2-binary
+
+
 # environmental variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

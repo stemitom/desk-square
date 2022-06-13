@@ -26,7 +26,7 @@ test: ## Run tests
 	python3 manage.py test 
 
 .PHONY: run
-run: ## Run the Django server
+run: activate## Run the Django server
 	python3 manage.py runserver
 
 # styling
