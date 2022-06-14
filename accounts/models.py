@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 
 from .managers import UserManager
 
@@ -53,6 +54,9 @@ class User(AbstractUser):
         "first_name",
         "last_name",
     )
+
+    def get_absolute_url(self):
+        return reverse("user-detail", args=[str(self.id)])
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
