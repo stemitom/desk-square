@@ -5,12 +5,9 @@ description = "API for an event management tool (ex. Meetup and EventBrite) writ
 authors = ["Temiloluwa Samuel <65780579+stemitom@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.9.12"
 djangorestframework = "^3.13.1"
-black = "^22.3.0"
 djangorestframework-simplejwt = "^5.1.0"
-flake8 = "^4.0.1"
-coverage = "^6.3.2"
 setuptools = "^62.3.2"
 six = "^1.16.0"
 django-shell-plus = "^1.1.7"
@@ -18,10 +15,13 @@ decouple = "^0.0.7"
 django-environ = "^0.8.1"
 mypy = "^0.961"
 psycopg2 = "^2.9.3"
+django-countries = "^7.3.2"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.3.0", allow-prereleases = true}
 isort = "^5.10.1"
+flake8 = "^4.0.1"
+coverage = "^6.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

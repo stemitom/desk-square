@@ -31,8 +31,8 @@ run: activate## Run the Django server
 
 # styling
 style: ## Lint the python project
+	isort .
 	black .
 	flake8
-	python3 -m isort .
 
 start: install migrate run ## Install requirements, apply migrations, then start development server

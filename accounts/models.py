@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django_countries import CountryField
 
+from .enums import UserPrefix
 from .managers import UserManager
 
 
@@ -35,11 +37,31 @@ class User(AbstractUser):
     )
 
     first_name = models.CharField(
-        _("first name"), max_length=100, blank=False, null=False
+        _("first name"), max_length=100, null=False, blank=False
     )
 
     last_name = models.CharField(
-        _("last name"), max_length=100, blank=False, null=False
+        _("last name"), max_length=100, null=False, blank=False
+    )
+
+    prefix = models.CharField(
+        _("prefix"), max_length=20, choices=UserPrefix, null=True, blank=True
+    )
+
+    phone = models.IntegerField(_("phone"), max_length=100, null=True, blank=True)
+
+    job_title = models.CharField(_("job_title"), max_length=100, null=True, blank=True)
+
+    company = models.CharField(_("company"), max_length=100, null=True, blank=True)
+
+    website = models.URLField(_("website"), max_length=100, null=True, blank=True)
+
+    blog = models.URLField(_("blog"), max_length=100, null=True, blank=True)
+
+    country = CountryField(_("country"))
+
+    postal_code = models.IntegerField(
+        _("postal_code"), max_length=100, null=True, blank=True
     )
 
     is_email_verified = models.BooleanField(_("is_email_verified"), default=False)

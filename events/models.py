@@ -5,9 +5,17 @@ from django.utils.translation import gettext_lazy as _
 
 class Events(models.Model):
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
-    title = models.CharField(_("title"), max_length=500)
+    title = models.CharField(
+        _("title"),
+        max_length=100,
+        null=False,
+        blank=False,
+    )
     description = models.CharField(_("description"), max_length=5000)
     place = models.CharField(_("place"), max_length=500)
     start_date = models.DateTimeField(_("start date"))
