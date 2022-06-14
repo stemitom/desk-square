@@ -1,14 +1,16 @@
 FROM python:3.9-slim-buster
 
-# install psycopg2-binary
-RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
-    && pip install psycopg2-binary
-
+# set work directory
+WORKDIR /code
 
 # environmental variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+
+# install psycopg2-binary
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc \
+    && apt-get -y install netcat
 
 # install poetry
 RUN pip install poetry==1.1.13
@@ -17,6 +19,13 @@ RUN pip install poetry==1.1.13
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev --no-root
 
-# install project
+# copy entrypoint
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' /code/entrypoint.sh
+RUN chmod +x /code/entrypoint.sh
+
+# copy project
 COPY . .
 RUN poetry install --no-dev
+
+ENTRYPOINT ["/code/entrypoint.sh"]
