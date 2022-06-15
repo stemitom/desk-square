@@ -3,7 +3,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django_countries import CountryField
+from django_countries.fields import CountryField
 
 from .enums import UserPrefix
 from .managers import UserManager
@@ -45,10 +45,10 @@ class User(AbstractUser):
     )
 
     prefix = models.CharField(
-        _("prefix"), max_length=20, choices=UserPrefix, null=True, blank=True
+        _("prefix"), max_length=20, choices=UserPrefix.choices, null=True, blank=True
     )
 
-    phone = models.IntegerField(_("phone"), max_length=100, null=True, blank=True)
+    phone = models.IntegerField(_("phone"), null=True, blank=True)
 
     job_title = models.CharField(_("job_title"), max_length=100, null=True, blank=True)
 
@@ -60,9 +60,7 @@ class User(AbstractUser):
 
     country = CountryField(_("country"))
 
-    postal_code = models.IntegerField(
-        _("postal_code"), max_length=100, null=True, blank=True
-    )
+    postal_code = models.IntegerField(_("postal_code"), null=True, blank=True)
 
     is_email_verified = models.BooleanField(_("is_email_verified"), default=False)
 
