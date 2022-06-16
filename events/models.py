@@ -68,3 +68,5 @@ class Time(models.Model):
     tz = TimeZoneField(default="Africa/Lagos", choices_display="WITH_GMT_OFFSET")
     start_date = models.DateTimeField(_("start date"))
     end_date = models.DateTimeField(_("end date"))
+    start_time = models.TimeField(_("start_time"))
+    end_time = models.TimeField(_("end_time"))

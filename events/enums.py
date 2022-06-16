@@ -38,7 +38,7 @@ class Category(TextChoices):
 class LocationType(TextChoices):
     VENUE = "Venue"
     ONLINE = "Online"
-    INPERSON = "In Person"
+    TBA = "To Be Announced"
 
 
 class TimingType(TextChoices):
