@@ -2,12 +2,15 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .enums import Type, Category, LocationType, TimingType
+from timezone_field import TimeZoneField
 
-class Events(models.Model):
+
+class Event(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        null=False,
+        null=True,
         blank=False,
     )
     title = models.CharField(
@@ -16,10 +19,9 @@ class Events(models.Model):
         null=False,
         blank=False,
     )
+    summary = models.CharField(_("description", max_length=150))
     description = models.CharField(_("description"), max_length=5000)
     place = models.CharField(_("place"), max_length=500)
-    start_date = models.DateTimeField(_("start date"))
-    end_date = models.DateTimeField(_("end date"))
     url = models.CharField(_("url"), max_length=500)
 
     class Meta:
@@ -30,4 +32,35 @@ class Events(models.Model):
 
 
 class Category(models.Model):
-    event = models.ForeignKey(Events, on_delete=models.CASCADE, null=False)
+    event = models.ManyToManyField(Event)
+    category = models.CharField(
+        _("category"), choices=Category.choices, null=True, blank=True
+    )
+
+
+class Type(models.Model):
+    event = models.ManyToManyField(Event)
+    etype = models.CharField(_("type"), choices=Type.choices, null=True, blank=True)
+
+
+class Location(models.Model):
+    event = models.ManyToManyField(Event)
+    loc_type = models.CharField(
+        _("location_type"),
+        choices=LocationType.choices,
+        null=True,
+        blank=True,
+        default=LocationType.VEN,
+    )
+    location = models.CharField(_("location"), null=True, blank=True)
+
+
+class Time(models.Model):
+    event = models.ForeignKey(Event)
+    timing_type = models.CharField(
+        _("timing_type"), choices=TimingType.choices, null=True, blank=True
+    )
+    timezone = models.CharField()
+    tz = TimeZoneField(default="Africa/Lagos", choices_display="WITH_GMT_OFFSET")
+    start_date = models.DateTimeField(_("start date"))
+    end_date = models.DateTimeField(_("end date"))

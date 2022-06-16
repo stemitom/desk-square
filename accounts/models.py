@@ -58,7 +58,7 @@ class User(AbstractUser):
 
     blog = models.URLField(_("blog"), max_length=100, null=True, blank=True)
 
-    country = CountryField(_("country"))
+    country = CountryField(_("country"), null=True, blank=True)
 
     postal_code = models.IntegerField(_("postal_code"), null=True, blank=True)
 
