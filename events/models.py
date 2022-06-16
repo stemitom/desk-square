@@ -58,7 +58,11 @@ class Location(models.Model):
 class Time(models.Model):
     event = models.ForeignKey(Event)
     timing_type = models.CharField(
-        _("timing_type"), choices=TimingType.choices, null=True, blank=True
+        _("timing_type"),
+        choices=TimingType.choices,
+        null=True,
+        blank=True,
+        default=TimingType.SINGLE,
     )
     timezone = models.CharField()
     tz = TimeZoneField(default="Africa/Lagos", choices_display="WITH_GMT_OFFSET")
