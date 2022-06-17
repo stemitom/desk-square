@@ -5,12 +5,13 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
+from commons.models import SoftDeleteBaseModel, TimeAndUUIDStampedBaseModel
+
 from .enums import UserPrefix
 from .managers import UserManager
 
 
-# Create your models here.
-class User(AbstractUser):
+class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):
     username = models.CharField(
         _("username"),
         max_length=20,

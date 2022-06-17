@@ -44,3 +44,9 @@ class LocationType(TextChoices):
 class TimingType(TextChoices):
     SINGLE = "Single Event"
     RECURRING = "Recurring Event"
+
+
+class TicketType(TextChoices):
+    PAID = "Paid"
+    FREE = "Free"
+    DONATION = "Donation"
