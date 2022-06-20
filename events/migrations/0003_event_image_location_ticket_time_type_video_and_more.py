@@ -13,106 +13,307 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0002_alter_events_title'),
+        ("events", "0002_alter_events_title"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('title', models.CharField(max_length=100, verbose_name='title')),
-                ('summary', models.CharField(max_length=150, verbose_name='description')),
-                ('description', models.CharField(max_length=2500, verbose_name='description')),
-                ('url', models.CharField(max_length=500, verbose_name='url')),
-                ('creator', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
+                ("title", models.CharField(max_length=100, verbose_name="title")),
+                (
+                    "summary",
+                    models.CharField(max_length=150, verbose_name="description"),
+                ),
+                (
+                    "description",
+                    models.CharField(max_length=2500, verbose_name="description"),
+                ),
+                ("url", models.CharField(max_length=500, verbose_name="url")),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created_at',),
+                "ordering": ("-created_at",),
             },
         ),
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.FileField(blank=True, null=True, upload_to='event_images')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.FileField(blank=True, null=True, upload_to="event_images"),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('loc_type', models.CharField(choices=[('Venue', 'Venue'), ('Online', 'Online'), ('To Be Announced', 'Tba')], default='Venue', max_length=100, verbose_name='location_type')),
-                ('location', models.CharField(blank=True, max_length=1500, null=True, verbose_name='location')),
-                ('event', models.ManyToManyField(to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "loc_type",
+                    models.CharField(
+                        choices=[
+                            ("Venue", "Venue"),
+                            ("Online", "Online"),
+                            ("To Be Announced", "Tba"),
+                        ],
+                        default="Venue",
+                        max_length=100,
+                        verbose_name="location_type",
+                    ),
+                ),
+                (
+                    "location",
+                    models.CharField(
+                        blank=True, max_length=1500, null=True, verbose_name="location"
+                    ),
+                ),
+                ("event", models.ManyToManyField(to="events.event")),
             ],
         ),
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('name', models.CharField(max_length=100, verbose_name='name')),
-                ('description', models.CharField(blank=True, max_length=2500, null=True, verbose_name='quantity_description')),
-                ('quantity', models.PositiveIntegerField(blank=True, null=True, verbose_name='quantity')),
-                ('price', models.PositiveIntegerField(blank=True, null=True, verbose_name='price')),
-                ('tickets_per_order', models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(100)], verbose_name='tickets_per_order')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
+                ("name", models.CharField(max_length=100, verbose_name="name")),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        max_length=2500,
+                        null=True,
+                        verbose_name="quantity_description",
+                    ),
+                ),
+                (
+                    "quantity",
+                    models.PositiveIntegerField(
+                        blank=True, null=True, verbose_name="quantity"
+                    ),
+                ),
+                (
+                    "price",
+                    models.PositiveIntegerField(
+                        blank=True, null=True, verbose_name="price"
+                    ),
+                ),
+                (
+                    "tickets_per_order",
+                    models.PositiveIntegerField(
+                        default=1,
+                        validators=[
+                            django.core.validators.MinValueValidator(1),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                        verbose_name="tickets_per_order",
+                    ),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Time',
+            name="Time",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timing_type', models.CharField(choices=[('Single Event', 'Single'), ('Recurring Event', 'Recurring')], default='Single Event', max_length=100, verbose_name='timing_type')),
-                ('tz', timezone_field.fields.TimeZoneField(choices_display='WITH_GMT_OFFSET', default='Africa/Lagos')),
-                ('start_date', models.DateTimeField(verbose_name='start date')),
-                ('end_date', models.DateTimeField(verbose_name='end date')),
-                ('start_time', models.TimeField(verbose_name='start_time')),
-                ('end_time', models.TimeField(verbose_name='end_time')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "timing_type",
+                    models.CharField(
+                        choices=[
+                            ("Single Event", "Single"),
+                            ("Recurring Event", "Recurring"),
+                        ],
+                        default="Single Event",
+                        max_length=100,
+                        verbose_name="timing_type",
+                    ),
+                ),
+                (
+                    "tz",
+                    timezone_field.fields.TimeZoneField(
+                        choices_display="WITH_GMT_OFFSET", default="Africa/Lagos"
+                    ),
+                ),
+                ("start_date", models.DateTimeField(verbose_name="start date")),
+                ("end_date", models.DateTimeField(verbose_name="end date")),
+                ("start_time", models.TimeField(verbose_name="start_time")),
+                ("end_time", models.TimeField(verbose_name="end_time")),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Type',
+            name="Type",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('etype', models.CharField(blank=True, choices=[('Appearance & Signing', 'Appearance'), ('Attraction', 'Attraction'), ('Camp, Trip and Retreat', 'Camp'), ('Concert Performance', 'Concert'), ('Conference', 'Conference'), ('Convention', 'Convention'), ('Dinner or Gala', 'Dinner'), ('Festival or Fair', 'Festival'), ('Game or Competition', 'Game'), ('Meeting or Network Events', 'Meeting'), ('Other', 'Other'), ('Party or Social Gathering', 'Party'), ('Race or Endurance Event', 'Race'), ('Rally', 'Rally'), ('Screening', 'Screening'), ('Seminar', 'Seminar'), ('Tour', 'Tour'), ('Tradeshow or Expo', 'Tradeshow'), ('Type', 'Type')], max_length=100, null=True, verbose_name='type')),
-                ('event', models.ManyToManyField(to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "etype",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("Appearance & Signing", "Appearance"),
+                            ("Attraction", "Attraction"),
+                            ("Camp, Trip and Retreat", "Camp"),
+                            ("Concert Performance", "Concert"),
+                            ("Conference", "Conference"),
+                            ("Convention", "Convention"),
+                            ("Dinner or Gala", "Dinner"),
+                            ("Festival or Fair", "Festival"),
+                            ("Game or Competition", "Game"),
+                            ("Meeting or Network Events", "Meeting"),
+                            ("Other", "Other"),
+                            ("Party or Social Gathering", "Party"),
+                            ("Race or Endurance Event", "Race"),
+                            ("Rally", "Rally"),
+                            ("Screening", "Screening"),
+                            ("Seminar", "Seminar"),
+                            ("Tour", "Tour"),
+                            ("Tradeshow or Expo", "Tradeshow"),
+                            ("Type", "Type"),
+                        ],
+                        max_length=100,
+                        null=True,
+                        verbose_name="type",
+                    ),
+                ),
+                ("event", models.ManyToManyField(to="events.event")),
             ],
         ),
         migrations.CreateModel(
-            name='Video',
+            name="Video",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video', models.FileField(blank=True, null=True, upload_to='event_videos')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(blank=True, null=True, upload_to="event_videos"),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='category',
-            name='category',
-            field=models.CharField(blank=True, choices=[('Auto, Boat & Air', 'Auto'), ('Business and Professional', 'Business'), ('Charity & Causes', 'Charity'), ('Community', 'Community'), ('Family & Education', 'Family'), ('Fashion & Beauty', 'Fashion'), ('Film & Entertainment', 'Film'), ('Food & Drink', 'Food'), ('Category', 'Category')], max_length=1500, null=True, verbose_name='category'),
+            model_name="category",
+            name="category",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Auto, Boat & Air", "Auto"),
+                    ("Business and Professional", "Business"),
+                    ("Charity & Causes", "Charity"),
+                    ("Community", "Community"),
+                    ("Family & Education", "Family"),
+                    ("Fashion & Beauty", "Fashion"),
+                    ("Film & Entertainment", "Film"),
+                    ("Food & Drink", "Food"),
+                    ("Category", "Category"),
+                ],
+                max_length=1500,
+                null=True,
+                verbose_name="category",
+            ),
         ),
         migrations.RemoveField(
-            model_name='category',
-            name='event',
+            model_name="category",
+            name="event",
         ),
         migrations.DeleteModel(
-            name='Events',
+            name="Events",
         ),
         migrations.AddField(
-            model_name='category',
-            name='event',
-            field=models.ManyToManyField(to='events.event'),
+            model_name="category",
+            name="event",
+            field=models.ManyToManyField(to="events.event"),
         ),
     ]

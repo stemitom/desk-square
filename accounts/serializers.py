@@ -16,8 +16,6 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-    email = serializers.CharField()
-    username = serializers.CharField()
 
     def validate_email(self, email):
         if User.objects.filter(email__iexact=email).exists():
@@ -59,6 +57,14 @@ class UserSerializer(serializers.ModelSerializer):
             "password2",
             "first_name",
             "last_name",
+            "prefix",
+            "phone",
+            "job_title",
+            "company",
+            "website",
+            "blog",
+            "country",
+            "postal_code",
             "is_email_verified",
             "email_verified_at",
         )

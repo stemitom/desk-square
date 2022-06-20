@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -44,7 +45,11 @@ class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):
     prefix = models.CharField(
         _("prefix"), max_length=20, choices=UserPrefix.choices, null=True, blank=True
     )
-    phone = models.IntegerField(_("phone"), null=True, blank=True)
+    phone_regex = RegexValidator(
+        regex=r"^\+\d{8,15}$",
+        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.",
+    )
+    phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
     job_title = models.CharField(_("job_title"), max_length=100, null=True, blank=True)
     company = models.CharField(_("company"), max_length=100, null=True, blank=True)
     website = models.URLField(_("website"), max_length=100, null=True, blank=True)
