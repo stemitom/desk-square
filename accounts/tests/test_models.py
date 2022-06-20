@@ -5,8 +5,18 @@ from django.test import TestCase
 
 class TestModels(TestCase):
     def setUp(self) -> None:
-        User.objects.create(email="testuser@gmail.com", username="testuser")
-        User.objects.create(email="testuser2@gmail.com", username="testuser2")
+        User.objects.create(
+            email="testuser@gmail.com",
+            username="testuser",
+            first_name="Test",
+            last_name="User",
+        )
+        User.objects.create(
+            email="testuser2@gmail.com",
+            username="testuser2",
+            first_name="Test2",
+            last_name="User2",
+        )
 
     def test_user_creation(self) -> None:
         testuser = User.objects.get(email="testuser@gmail.com")
