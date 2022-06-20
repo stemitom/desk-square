@@ -58,7 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "prefix",
-            "phone",
+            "phone_number",
             "job_title",
             "company",
             "website",
