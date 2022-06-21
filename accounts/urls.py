@@ -4,6 +4,12 @@ from . import views
 
 app_name = "accounts"
 urlpatterns = [
+    path("me", views.CurrentUserView.as_view(), name="logged_in_user_details"),
+    path(
+        "list_users",
+        views.ListUsersView.as_view(),
+        name="list_users",
+    ),
     path(
         "registration",
         views.SignupView.as_view(),
@@ -20,11 +26,6 @@ urlpatterns = [
         name="logout",
     ),
     path(
-        "list_users",
-        views.ListUsersView.as_view(),
-        name="list_users",
-    ),
-    path(
         "request_activation",
         views.RequestActivationView.as_view(),
         name="request_activation",
@@ -35,13 +36,13 @@ urlpatterns = [
         name="activate",
     ),
     path(
-        "reset_pw",
+        "change_password",
         views.ChangePasswordView.as_view(),
-        name="reset_password",
+        name="change_password",
     ),
     path(
-        "request_passwordReset",
+        "request_password_reset",
         views.RequestPasswordResetView.as_view(),
-        name="request_passwordReset",
+        name="request_password_reset",
     ),
 ]

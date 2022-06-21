@@ -1,7 +1,7 @@
 from django.db.models import TextChoices
 
 
-class Type(TextChoices):
+class EType(TextChoices):
     APPEARANCE = "Appearance & Signing"
     ATTRACTION = "Attraction"
     CAMP = "Camp, Trip and Retreat"
@@ -32,6 +32,8 @@ class Category(TextChoices):
     FASHION = "Fashion & Beauty"
     FILM = "Film & Entertainment"
     FOOD = "Food & Drink"
+    FAIR = "Fair"
+    TECH = "Technology"
     CATEGORY = "Category"
 
 

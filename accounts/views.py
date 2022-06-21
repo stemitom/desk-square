@@ -25,6 +25,15 @@ class ListUsersView(generics.ListAPIView):
         return User.objects.exclude(email=self.request.user.email)
 
 
+class CurrentUserView(GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data)
+
+
 class SignupView(generics.CreateAPIView):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()

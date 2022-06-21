@@ -1,12 +1,14 @@
+import datetime
+
 from django.conf import settings
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from timezone_field import TimeZoneField
 
 from commons.models import TimeAndUUIDStampedBaseModel
 
-from .enums import Category, LocationType, TimingType, Type
+from .enums import Category, EType, LocationType, TimingType
 
 
 class Event(TimeAndUUIDStampedBaseModel):
@@ -22,34 +24,21 @@ class Event(TimeAndUUIDStampedBaseModel):
         max_length=100,
         null=False,
         blank=False,
+        db_index=True,
     )
-    summary = models.CharField(_("description"), max_length=150)
-    description = models.CharField(_("description"), max_length=2500)
-    url = models.CharField(_("url"), max_length=500)
+    summary = models.CharField(_("summary"), max_length=150)
+    description = models.CharField(
+        _("description"), null=True, blank=True, max_length=2500
+    )
+    url = models.URLField(_("url"), null=True, blank=True, max_length=500)
 
-    class Meta:
-        ordering = ("-created_at",)
-
-    def __str__(self):
-        return f"{self.title}"
-
-
-class Category(models.Model):
-    event = models.ManyToManyField(Event)
     category = models.CharField(
         _("category"), choices=Category.choices, null=True, blank=True, max_length=1500
     )
-
-
-class Type(models.Model):
-    event = models.ManyToManyField(Event)
-    etype = models.CharField(
-        _("type"), choices=Type.choices, null=True, blank=True, max_length=100
+    event_type = models.CharField(
+        _("type"), choices=EType.choices, null=True, blank=True, max_length=100
     )
 
-
-class Location(models.Model):
-    event = models.ManyToManyField(Event)
     loc_type = models.CharField(
         _("location_type"),
         choices=LocationType.choices,
@@ -60,19 +49,6 @@ class Location(models.Model):
     )
     location = models.CharField(_("location"), null=True, blank=True, max_length=1500)
 
-
-class Image(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    image = models.FileField(upload_to="event_images", blank=True, null=True)
-
-
-class Video(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    video = models.FileField(upload_to="event_videos", blank=True, null=True)
-
-
-class Time(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     timing_type = models.CharField(
         _("timing_type"),
         choices=TimingType.choices,
@@ -82,12 +58,30 @@ class Time(models.Model):
         max_length=100,
     )
     tz = TimeZoneField(default="Africa/Lagos", choices_display="WITH_GMT_OFFSET")
-    start_date = models.DateTimeField(_("start date"))
-    end_date = models.DateTimeField(_("end date"))
-    start_time = models.TimeField(
-        _("start_time"),
+    start_date = models.DateField(_("start date"), default=datetime.date.today)
+    start_time = models.TimeField(_("start_time"), null=True, blank=True)
+    end_date = models.DateField(_("end date"), default=datetime.date.today)
+    end_time = models.TimeField(_("end_time"), null=True, blank=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+class Tag(models.Model):
+    event = models.ManyToManyField(Event, related_name="tags")
+    tag_regex = RegexValidator(
+        regex="^[A-Za-z0-9_]+$",
+        message="Tags can only contain letters, numbers and underscores",
     )
-    end_time = models.TimeField(_("end_time"))
+    name = models.CharField(
+        _("tag"), validators=[tag_regex], null=True, blank=True, max_length=50
+    )
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Ticket(TimeAndUUIDStampedBaseModel):
@@ -103,3 +97,13 @@ class Ticket(TimeAndUUIDStampedBaseModel):
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
+
+
+class Image(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    image = models.FileField(upload_to="event_images", blank=True, null=True)
+
+
+class Video(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    video = models.FileField(upload_to="event_videos", blank=True, null=True)
