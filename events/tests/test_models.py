@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from accounts.models import User
-from events.models import Event, Tag
+from events.models import Event, Tag, Location
 
 
 class TestModels(TestCase):
@@ -23,8 +23,7 @@ class TestModels(TestCase):
             url="https://www.django-rest-framework.org/api-guide/serializers/#modelserializer",
             category="Technology",
             event_type="Conference",
-            loc_type="Online",
-            location="https://meet.google.com",
+            timing_type="Recurring",
             tz="Africa/Lagos",
             start_date=datetime.date(2022, 8, 8),
             start_time=datetime.time(10, 30, 00),
@@ -36,11 +35,33 @@ class TestModels(TestCase):
             Tag.objects.create(name="Django"),
             Tag.objects.create(name="API"),
         ]
-
         event.tags.add(*tags)
-        print(event.tz)
+
+        Location.objects.create(
+            event=event,
+            location_type="Venue",
+            location="13th Redmond, CA",
+            conference_uri="https://meet.google.com",
+            lat="37.4267861",
+            long="-122.0806032",
+            state="California",
+            country="USA",
+        )
+
+        event.tickets.create(
+            name="Ticket #1",
+            description="VIP Ticket",
+            quantity="100",
+            price=5.50,
+            tickets_per_order=1,
+        )
 
     def test_event_creation(self) -> None:
         testevent = Event.objects.get(title="Django Meetup - Lagos Branch")
         self.assertTrue(isinstance(testevent, Event))
         self.assertEqual(str(testevent), testevent.title)
+
+    def test_event_recurrent(self) -> None:
+        testevent = Event.objects.get(title="Django Meetup - Lagos Branch")
+        print(testevent.is_recurrent)
+        self.assertIs(testevent.is_recurrent, True)

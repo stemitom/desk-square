@@ -70,14 +70,14 @@ class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):
 
     objects = UserManager()
 
+    def __str__(self) -> str:
+        return self.email
+
     def get_absolute_url(self):
         return reverse("user-detail", args=[str(self.id)])
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
-
-    def __str__(self) -> str:
-        return self.email
 
     @property
     def profile_url(self) -> str:

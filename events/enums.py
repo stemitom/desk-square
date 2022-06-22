@@ -1,7 +1,7 @@
 from django.db.models import TextChoices
 
 
-class EType(TextChoices):
+class EventType(TextChoices):
     APPEARANCE = "Appearance & Signing"
     ATTRACTION = "Attraction"
     CAMP = "Camp, Trip and Retreat"
@@ -44,11 +44,16 @@ class LocationType(TextChoices):
 
 
 class TimingType(TextChoices):
-    SINGLE = "Single Event"
-    RECURRING = "Recurring Event"
+    SINGLE = "Single"
+    RECURRING = "Recurring"
 
 
 class TicketType(TextChoices):
     PAID = "Paid"
     FREE = "Free"
     DONATION = "Donation"
+
+
+class MediaType(TextChoices):
+    IMAGE = "Image"
+    VIDEO = "Video"
