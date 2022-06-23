@@ -6,7 +6,7 @@ app_name = "accounts"
 urlpatterns = [
     path("me", views.CurrentUserView.as_view(), name="logged_in_user_details"),
     path(
-        "list_users",
+        "list-users",
         views.ListUsersView.as_view(),
         name="list_users",
     ),
@@ -26,7 +26,7 @@ urlpatterns = [
         name="logout",
     ),
     path(
-        "request_activation",
+        "request-activation",
         views.RequestActivationView.as_view(),
         name="request_activation",
     ),
@@ -36,12 +36,12 @@ urlpatterns = [
         name="activate",
     ),
     path(
-        "change_password",
+        "change-password",
         views.ChangePasswordView.as_view(),
         name="change_password",
     ),
     path(
-        "request_password_reset",
+        "request-password-reset",
         views.RequestPasswordResetView.as_view(),
         name="request_password_reset",
     ),

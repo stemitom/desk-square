@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from accounts.models import User
-from events.models import Event, Tag, Location
+from events.models import Event, Location, Tag
 
 
 class TestModels(TestCase):

@@ -8,18 +8,24 @@ import django_countries.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0007_remove_event_loc_type_remove_event_location_and_more'),
+        ("events", "0007_remove_event_loc_type_remove_event_location_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='location',
-            name='country',
-            field=django_countries.fields.CountryField(blank=True, max_length=2, null=True, verbose_name='country'),
+            model_name="location",
+            name="country",
+            field=django_countries.fields.CountryField(
+                blank=True, max_length=2, null=True, verbose_name="country"
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='events.event'),
+            model_name="ticket",
+            name="event",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tickets",
+                to="events.event",
+            ),
         ),
     ]

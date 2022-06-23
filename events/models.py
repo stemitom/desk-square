@@ -9,7 +9,7 @@ from timezone_field import TimeZoneField
 
 from commons.models import TimeAndUUIDStampedBaseModel
 
-from .enums import Category, EventType, LocationType, TimingType, MediaType
+from .enums import Category, EventType, LocationType, MediaType, TimingType
 
 
 class Event(TimeAndUUIDStampedBaseModel):
@@ -64,6 +64,10 @@ class Event(TimeAndUUIDStampedBaseModel):
     def is_recurrent(self):
         return self.timing_type == TimingType.RECURRING
 
+    @property
+    def ticket_details(self):
+        return self.ticket.all()
+
 
 class Location(models.Model):
     event = models.OneToOneField(
@@ -101,6 +105,7 @@ class Tag(models.Model):
         null=True,
         blank=True,
         max_length=50,
+        unique=True,
         db_index=True,
     )
 
@@ -126,7 +131,7 @@ class Ticket(TimeAndUUIDStampedBaseModel):
 
 
 class Media(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="medias")
     file = models.FileField(upload_to="event_uploads", null=True, blank=True)
     type = models.CharField(
         _("type"), choices=MediaType.choices, null=True, blank=True, max_length=10

@@ -4,4 +4,10 @@ from . import views
 
 app_name = "events"
 
-urlpatterns = []
+urlpatterns = [
+    path(
+        "create",
+        views.CreateEventView.as_view(),
+        name="create_event",
+    ),
+]

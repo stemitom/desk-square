@@ -7,32 +7,61 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0008_location_country_alter_ticket_event'),
+        ("events", "0008_location_country_alter_ticket_event"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Media',
+            name="Media",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(blank=True, null=True, upload_to='event_uploads')),
-                ('type', models.CharField(blank=True, choices=[('Image', 'Image'), ('Video', 'Video')], max_length=10, null=True, verbose_name='type')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(blank=True, null=True, upload_to="event_uploads"),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        blank=True,
+                        choices=[("Image", "Image"), ("Video", "Video")],
+                        max_length=10,
+                        null=True,
+                        verbose_name="type",
+                    ),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='video',
-            name='event',
+            model_name="video",
+            name="event",
         ),
         migrations.AlterField(
-            model_name='location',
-            name='event',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='events.event'),
+            model_name="location",
+            name="event",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="locations",
+                to="events.event",
+            ),
         ),
         migrations.DeleteModel(
-            name='Image',
+            name="Image",
         ),
         migrations.DeleteModel(
-            name='Video',
+            name="Video",
         ),
     ]
