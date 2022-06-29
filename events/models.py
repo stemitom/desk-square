@@ -1,8 +1,11 @@
 import datetime
+import uuid
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
@@ -67,6 +70,47 @@ class Event(TimeAndUUIDStampedBaseModel):
     @property
     def ticket_details(self):
         return self.ticket.all()
+
+
+class Attendee(TimeAndUUIDStampedBaseModel):
+    name = models.CharField(_("name"), null=True, blank=True, max_length=250)
+    email = models.EmailField(_("email"), null=True, blank=True, max_length=250)
+    attendee = models.ForeignKey(
+        _("attendee"), null=True, blank=True, on_delete=models.CASCADE, db_index=True
+    )
+    event = models.ForeignKey(_("event"), on_delete=models.CASCADE)
+    gender = models.CharField(_("gender"), null=True, blank=True, max_length=15)
+    ticket_id = models.UUIDField(
+        _("ticket_id"), default=uuid.uuid4, editable=False, unique=True
+    )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["email", "event"], name="user_email_register_event_once"
+            ),
+        ]
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"User with email {self.email} -> Event {self.event.id}"
+
+    def clean(self) -> None:
+        if not (self.name and self.email):
+            if not self.attendee:
+                raise ValidationError(
+                    {
+                        "attendee": _(
+                            "An email and username is required if not registering as an active user"
+                        )
+                    }
+                )
+
+        return super(Attendee, self).clean()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(Attendee, self).save(*args, **kwargs)
 
 
 class Location(models.Model):

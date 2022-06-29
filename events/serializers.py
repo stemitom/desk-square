@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from events.models import Event, Location, Media, Tag, Ticket
+from events.models import Event, Location, Media, Tag, Ticket, Attendee
 from timezone_field.rest_framework import TimeZoneSerializerField
 
 
@@ -51,3 +51,17 @@ class EventSerializer(serializers.ModelSerializer):
 
         Location.objects.create(event=event, **location_data)
         return event
+
+
+class AttendeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendee
+        exclude = ("ticket_id",)
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        event = self.context["event"].event
+        validated_data.updated({"attendee": user, "event": event})
+
+        attendee = Attendee.objects.create(**validated_data)
+        return attendee
