@@ -49,7 +49,9 @@ class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):
         regex=r"^\+\d{8,15}$",
         message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.",
     )
-    phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
+    phone_number = models.CharField(
+        validators=[phone_regex], max_length=16, null=True, blank=True
+    )
     job_title = models.CharField(_("job_title"), max_length=100, null=True, blank=True)
     company = models.CharField(_("company"), max_length=100, null=True, blank=True)
     website = models.URLField(_("website"), max_length=100, null=True, blank=True)

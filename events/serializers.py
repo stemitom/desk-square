@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from events.models import Event, Location, Media, Tag, Ticket, Attendee
+from events.models import Event, Location, Media, Tag, Ticket, Attendee, TicketOrder
 from timezone_field.rest_framework import TimeZoneSerializerField
 
 
@@ -8,6 +8,12 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         exclude = ("event",)
+
+
+class TicketOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketOrder
+        exclude = ("order_id",)
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -54,14 +60,22 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class AttendeeSerializer(serializers.ModelSerializer):
+    ticket_order = TicketOrderSerializer()
+
     class Meta:
         model = Attendee
-        exclude = ("ticket_id",)
+        fields = "__all__"
 
     def create(self, validated_data):
-        user = self.context["request"].user
+        request = self.context["request"]
+        user = request.user
+        quantity = request.query_params["qty"]
         event = self.context["event"].event
-        validated_data.updated({"attendee": user, "event": event})
+        quantity = validated_data.pop("qty")
+        validated_data.updated({"user": user, "event": event})
 
         attendee = Attendee.objects.create(**validated_data)
+        TicketOrder.objects.create(
+            user=attendee, tickets_purchased=event.ticket, quantity=quantity
+        )
         return attendee

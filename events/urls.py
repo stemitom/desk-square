@@ -11,8 +11,8 @@ urlpatterns = [
         name="create_event",
     ),
     path(
-        "<int: event_id>/register",
-        views.RegisterForEventView,
+        "<int:event_id>/register",
+        views.RegisterForEventView.as_view(),
         name="register_for_event_view",
     ),
 ]

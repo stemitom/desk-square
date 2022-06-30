@@ -22,6 +22,7 @@ class Event(TimeAndUUIDStampedBaseModel):
         null=True,
         blank=False,
         db_index=True,
+        related_name="events",
     )
     title = models.CharField(
         _("title"),
@@ -73,44 +74,21 @@ class Event(TimeAndUUIDStampedBaseModel):
 
 
 class Attendee(TimeAndUUIDStampedBaseModel):
-    name = models.CharField(_("name"), null=True, blank=True, max_length=250)
-    email = models.EmailField(_("email"), null=True, blank=True, max_length=250)
-    attendee = models.ForeignKey(
-        _("attendee"), null=True, blank=True, on_delete=models.CASCADE, db_index=True
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        db_index=True,
+        related_name="attendees",
     )
-    event = models.ForeignKey(_("event"), on_delete=models.CASCADE)
-    gender = models.CharField(_("gender"), null=True, blank=True, max_length=15)
-    ticket_id = models.UUIDField(
-        _("ticket_id"), default=uuid.uuid4, editable=False, unique=True
-    )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="attendees")
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                fields=["email", "event"], name="user_email_register_event_once"
-            ),
+            UniqueConstraint(fields=["user", "event"], name="user_register_event_once"),
         ]
         ordering = ("-created_at",)
-
-    def __str__(self) -> str:
-        return f"User with email {self.email} -> Event {self.event.id}"
-
-    def clean(self) -> None:
-        if not (self.name and self.email):
-            if not self.attendee:
-                raise ValidationError(
-                    {
-                        "attendee": _(
-                            "An email and username is required if not registering as an active user"
-                        )
-                    }
-                )
-
-        return super(Attendee, self).clean()
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super(Attendee, self).save(*args, **kwargs)
 
 
 class Location(models.Model):
@@ -163,14 +141,29 @@ class Ticket(TimeAndUUIDStampedBaseModel):
     description = models.CharField(
         _("quantity_description"), null=True, blank=True, max_length=2500
     )
-    quantity = models.PositiveIntegerField(_("quantity"), null=True, blank=True)
-    price = models.DecimalField(
+    quantity_available = models.PositiveIntegerField(
+        _("quantity"), null=True, blank=True
+    )
+    unit_price = models.DecimalField(
         _("price"), max_digits=22, decimal_places=5, null=True, blank=True
     )
-    tickets_per_order = models.PositiveIntegerField(
+    max_tickets_per_order = models.PositiveIntegerField(
         _("tickets_per_order"),
         default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        validators=[MinValueValidator(1)],
+    )
+
+
+class TicketOrder(TimeAndUUIDStampedBaseModel):
+    user = models.ForeignKey(
+        Attendee, on_delete=models.DO_NOTHING, related_name="orders"
+    )
+    tickets_purchased = models.ForeignKey(
+        Ticket, on_delete=models.DO_NOTHING, related_name="orders"
+    )
+    quantity = models.PositiveIntegerField(_("quantity"), default=1)
+    order_id = models.UUIDField(
+        _("order_id"), default=uuid.uuid4, db_index=True, unique=True
     )
 
 

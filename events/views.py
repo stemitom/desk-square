@@ -29,18 +29,20 @@ class RegisterForEventView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         event_id = kwargs["event_id"]
-        event = Event.objects.filter(id=kwargs["event_id"])
+        event = Event.objects.filter(id=kwargs["event_id"]).first()
         if event:
-            if request.user.is_authenticated and request.user.id == event.id:
+            if request.user.is_authenticated and request.user.id == event.creator.id:
                 return Response(
                     {
                         "error": "You can't register for an event you created, please try again!"
                     },
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
-
         else:
-            return Response({"error": f"Event with ID {event_id} does not exist"})
+            return Response(
+                {"error": f"Event with ID {event_id} does not exist"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
         serializer = self.get_serializer(
             data=request.data, context={"request": request, "event": event}
         )
