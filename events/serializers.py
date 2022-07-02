@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
 
 from events.models import Event, Location, Media, Tag, Ticket, Attendee, TicketOrder
 from timezone_field.rest_framework import TimeZoneSerializerField
@@ -60,27 +61,31 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class AttendeeSerializer(serializers.ModelSerializer):
-    ticket_order = TicketOrderSerializer()
+    ticket_order = TicketOrderSerializer(read_only=True)
 
     class Meta:
         model = Attendee
-        fields = "__all__"
+        exclude = ("event",)
 
     def create(self, validated_data):
         request = self.context["request"]
-        event = self.context["event"].event
+        event = self.context["event"]
         quantity = request.query_params["ticket_qty"]
 
         user = request.user
 
         if user:
-            validated_data.updated(
-                {"name": user.name, "email": user.email, "user": attendee}
+            validated_data.update(
+                {"name": user.get_full_name(), "email": user.email, "user": user}
             )
-        validated_data.updated({"event": event})
-
+        validated_data.update({"event": event})
+        if Attendee.objects.filter(**validated_data).exists():
+            raise serializers.ValidationError(
+                "You are already registered to this event! Please do check your email for registeration and ticket details or contact support"
+            )
         attendee = Attendee.objects.create(**validated_data)
+        ticket = Ticket.objects.filter(event=event).first()
         TicketOrder.objects.create(
-            user=attendee, tickets_purchased=event.ticket, quantity=quantity
+            user=attendee, tickets_purchased=ticket, quantity=quantity
         )
         return attendee

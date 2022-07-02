@@ -74,7 +74,7 @@ class Event(TimeAndUUIDStampedBaseModel):
 
 
 class Attendee(TimeAndUUIDStampedBaseModel):
-    name = models.CharField(_("name"), null=True, blank=True, max_length=20)
+    name = models.CharField(_("name"), null=True, blank=True, max_length=100)
     email = models.EmailField(
         _("email"), null=True, blank=True, max_length=100, db_index=True
     )
@@ -91,12 +91,14 @@ class Attendee(TimeAndUUIDStampedBaseModel):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["user", "event"], name="user_register_event_once"),
+            UniqueConstraint(
+                fields=["email", "event"], name="email_register_event_once"
+            ),
         ]
         ordering = ("-created_at",)
 
     def clean(self) -> None:
-        if not self.attendee:
+        if not self.user:
             if not (self.name and self.email):
                 raise ValidationError(
                     {
