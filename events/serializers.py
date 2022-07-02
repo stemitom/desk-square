@@ -68,11 +68,16 @@ class AttendeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context["request"]
-        user = request.user
-        quantity = request.query_params["qty"]
         event = self.context["event"].event
-        quantity = validated_data.pop("qty")
-        validated_data.updated({"user": user, "event": event})
+        quantity = request.query_params["ticket_qty"]
+
+        user = request.user
+
+        if user:
+            validated_data.updated(
+                {"name": user.name, "email": user.email, "user": attendee}
+            )
+        validated_data.updated({"event": event})
 
         attendee = Attendee.objects.create(**validated_data)
         TicketOrder.objects.create(

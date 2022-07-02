@@ -7,10 +7,12 @@ from .models import Event, Location, Media, Tag, Ticket, Attendee
 from .serializers import EventSerializer, AttendeeSerializer
 
 
-class CreateEventView(generics.CreateAPIView):
+class ListCreateEventView(generics.ListCreateAPIView):
     serializer_class = EventSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Event.objects.all()
+
+    def get_queryset(self):
+        return Event.objects.filter(creator=self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
@@ -20,6 +22,14 @@ class CreateEventView(generics.CreateAPIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors)
+
+
+class RetrieveUpdateDestroyEventView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = EventSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Event.objects.filter(creator=self.request.user)
 
 
 class RegisterForEventView(generics.CreateAPIView):

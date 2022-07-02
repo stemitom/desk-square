@@ -6,9 +6,14 @@ app_name = "events"
 
 urlpatterns = [
     path(
-        "create",
-        views.CreateEventView.as_view(),
-        name="create_event",
+        "",
+        views.ListCreateEventView.as_view(),
+        name="list_create_event",
+    ),
+    path(
+        "<int:pk>",
+        views.RetrieveUpdateDestroyEventView.as_view(),
+        name="retrieve_update_destroy_event",
     ),
     path(
         "<int:event_id>/register",

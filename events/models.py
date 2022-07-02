@@ -74,6 +74,10 @@ class Event(TimeAndUUIDStampedBaseModel):
 
 
 class Attendee(TimeAndUUIDStampedBaseModel):
+    name = models.CharField(_("name"), null=True, blank=True, max_length=20)
+    email = models.EmailField(
+        _("email"), null=True, blank=True, max_length=100, db_index=True
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
@@ -83,12 +87,28 @@ class Attendee(TimeAndUUIDStampedBaseModel):
         related_name="attendees",
     )
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="attendees")
+    guest = models.BooleanField(_("guest"), default=False)
 
     class Meta:
         constraints = [
             UniqueConstraint(fields=["user", "event"], name="user_register_event_once"),
         ]
         ordering = ("-created_at",)
+
+    def clean(self) -> None:
+        if not self.attendee:
+            if not (self.name and self.email):
+                raise ValidationError(
+                    {
+                        "attendee": "name and email should be supplied if registering for an event as a guest"
+                    }
+                )
+            self.guest = True
+        return super(Attendee, self).clean()
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super(Attendee, self).save(*args, **kwargs)
 
 
 class Location(models.Model):
