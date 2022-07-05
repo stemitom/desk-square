@@ -178,7 +178,7 @@ class Ticket(TimeAndUUIDStampedBaseModel):
 
 class TicketOrder(TimeAndUUIDStampedBaseModel):
     user = models.ForeignKey(
-        Attendee, on_delete=models.DO_NOTHING, related_name="orders"
+        Attendee, on_delete=models.DO_NOTHING, related_name="ticket_orders"
     )
     tickets_purchased = models.ForeignKey(
         Ticket, on_delete=models.DO_NOTHING, related_name="orders"

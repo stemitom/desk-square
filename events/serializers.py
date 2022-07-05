@@ -61,7 +61,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class AttendeeSerializer(serializers.ModelSerializer):
-    ticket_order = TicketOrderSerializer(read_only=True)
+    ticket_orders = TicketOrderSerializer(read_only=True, many=True)
 
     class Meta:
         model = Attendee
