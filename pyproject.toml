@@ -17,6 +17,7 @@ psycopg2 = "^2.9.3"
 django-countries = "^7.3.2"
 django-timezone-field = "^5.0"
 tzdata = "^2022.1"
+celery = "^5.2.7"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.3.0", allow-prereleases = true}

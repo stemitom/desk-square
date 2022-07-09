@@ -6,13 +6,42 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./scripts:/docker-entrypoint-initdb.d
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./.env.dev
     ports:
       - 5433:5432
-  
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    restart: always
+    env_file:
+      - ./.env.dev
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  celery-worker:
+    build: .
+    command: poetry run celery -A config worker -l INFO
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - rabbitmq
+
+  celery-beat:
+    build: .
+    command: poetry run celery -A config beat -l INFO
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - rabbitmq
+
   mailhog:
     image: mailhog/mailhog
     logging:
@@ -33,8 +62,10 @@ services:
     depends_on:
       - db
       - mailhog
+      - rabbitmq
     
 
 volumes:
   db-data:
+  rabbitmq-data:
   

@@ -19,9 +19,10 @@ RUN pip install poetry==1.1.13
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev --no-root
 
-# copy entrypoint
+# copy entrypoint and script to confirm postgres and rabbit are healthy
+COPY ./wait-for-postgres.sh .
 COPY ./entrypoint.sh .
-RUN sed -i 's/\r$//g' /code/entrypoint.sh
+RUN chmod +x /code/wait-for-postgres.sh
 RUN chmod +x /code/entrypoint.sh
 
 # copy project
