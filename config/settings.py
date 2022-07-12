@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+from celery.schedules import crontab
 from datetime import timedelta
 from pathlib import Path
 
@@ -20,7 +21,6 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -117,6 +117,14 @@ RABBITMQ_PORT = os.environ.get("RABBITMQ_PORT", "5672")
 RABBITMQ_DEFAULT_USER = os.environ.get("RABBITMQ_DEFAULT_USER", "guest")
 RABBITMQ_DEFAULT_PASS = os.environ.get("RABBITMQ_DEFAULT_PASS", "guest")
 CELERY_BROKER_URL = f"amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/"
+
+CELERY_BEAT_SCHEDULE = {
+    "delete_unverified_accounts": {
+        "task": "accounts.tasks.delete_unverified_accounts",
+        "schedule": crontab(hour="*/6"),
+    },
+}
+
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
