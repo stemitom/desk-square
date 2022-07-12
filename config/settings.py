@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+
 import os
-from celery.schedules import crontab
 from datetime import timedelta
 from pathlib import Path
 
 import environ
+from celery import schedules
 
 env = environ.Env(
     # set casting, default value
@@ -121,7 +122,7 @@ CELERY_BROKER_URL = f"amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@{RA
 CELERY_BEAT_SCHEDULE = {
     "delete_unverified_accounts": {
         "task": "accounts.tasks.delete_unverified_accounts",
-        "schedule": crontab(hour="*/6"),
+        "schedule": schedules.crontab(hour="*/6"),
     },
 }
 
