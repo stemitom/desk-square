@@ -31,7 +31,7 @@ urlpatterns = [
         name="request_activation",
     ),
     path(
-        "activate",
+        "activate/<str:uid>/<str:token>",
         views.ActivateAccountView.as_view(),
         name="activate",
     ),

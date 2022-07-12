@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator
 from django.db import models
@@ -9,6 +9,7 @@ from django_countries.fields import CountryField
 from commons.models import SoftDeleteBaseModel, TimeAndUUIDStampedBaseModel
 
 from .enums import UserPrefix
+from .managers import UserManager
 
 
 class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):

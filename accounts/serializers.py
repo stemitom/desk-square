@@ -1,14 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-
-from accounts.tokens import PasswordResetTokenGenerator, UserActivationTokenGenerator
 
 User = get_user_model()
 
@@ -99,27 +94,6 @@ class RefreshTokenSerializer(serializers.Serializer):
             self.fail("bad_token")
 
 
-class ActivateAccountSerializer(serializers.Serializer):
-    uid = serializers.CharField()
-    token = serializers.CharField()
-
-    def validate(self, data):
-        uid = data["uid"]
-        token = data["token"]
-
-        User = get_user_model()
-        try:
-            uid = force_str(urlsafe_base64_decode(uid))
-            user = User.objects.get(pk=uid)
-        except (ObjectDoesNotExist, ValueError):
-            raise serializers.ValidationError("Given user does not exist")
-
-        activation_token = UserActivationTokenGenerator()
-        if not activation_token.check_token(user, token):
-            raise serializers.ValidationError("Given token is wrong")
-        return user
-
-
 class ChangePasswordSerializer(serializers.Serializer):
     old_pw = serializers.CharField(write_only=True, required=True)
     new_pw = serializers.CharField(
@@ -147,7 +121,3 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return user
-
-
-class ResetPasswordSerializer(serializers.Serializer):
-    pass

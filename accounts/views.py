@@ -1,19 +1,20 @@
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework import generics, permissions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from secrets import token_hex
 
 from .serializers import (
-    ActivateAccountSerializer,
     ChangePasswordSerializer,
     LogInSerializer,
     RefreshTokenSerializer,
-    ResetPasswordSerializer,
     UserSerializer,
 )
-from .utils import send_tokenified_email
+from .tasks import send_async_account_activation_mail, send_async_password_reset_mail
+from .utils import verify_uid_and_token
 
 
 class ListUsersView(generics.ListAPIView):
@@ -60,8 +61,9 @@ class LogoutView(GenericAPIView):
 class RequestActivationView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, *args):
-        send_tokenified_email(request.user, request, ctx="activation")
+    def get(self, request, *args, **kwargs):
+        send_async_account_activation_mail(request.user.pk, request)
+
         return Response(
             {
                 "message": "Email verification sent to email! Check your email and use the link to verify your account"
@@ -71,26 +73,27 @@ class RequestActivationView(APIView):
 
 
 class ActivateAccountView(GenericAPIView):
-    serializer_class = ActivateAccountSerializer
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, *args):
-        serializer = self.get_serializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        if user.is_email_verified:
-            return Response(
-                {"message": "Account has already been activated!"},
-                status=status.HTTP_409,
-            )
-        user.is_email_verified = True
-        user.save()
+    def get(self, request, *args, **kwargs):
+        user, is_valid = verify_uid_and_token(**kwargs, type="activation")
+        if is_valid:
+            if user.is_email_verified:
+                return Response(
+                    {"message": "Account has already been activated!"},
+                    status=status.HTTP_409,
+                )
+            user.is_email_verified = True
+            user.email_verified_at = timezone.now()
+            user.save()
 
+            return Response(
+                {"message": "Your account has been activated sucessfully!"},
+                status=status.HTTP_200_OK,
+            )
         return Response(
-            {
-                "message": "Email successfully verified! Your account is sucessfully activated!"
-            },
-            status=status.HTTP_200_OK,
+            {"error": "The token has expired, already used or invalid!"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
@@ -113,18 +116,11 @@ class RequestPasswordResetView(APIView):
 
     def post(self, request, *args):
         data = request.data
-        try:
-            email = data["email"]
-            print(email)
-        except KeyError:
-            return Response(
-                {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        else:
-            User = get_user_model()
-            user = User.objects.filter(email=email).first()
-            if user:
-                send_tokenified_email(user, request, ctx="passwordReset")
+        email = data.get("email", token_hex(6))
+        User = get_user_model()
+        user = User.objects.filter(email=email).first()
+        if user:
+            send_async_password_reset_mail(user.pk, request)
         return Response(
             {"message": "Please do check your email for further instructions!"},
             status=status.HTTP_200_OK,
