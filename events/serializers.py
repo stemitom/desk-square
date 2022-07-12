@@ -61,10 +61,12 @@ class EventSerializer(serializers.ModelSerializer):
 
 class AttendeeSerializer(serializers.ModelSerializer):
     ticket_orders = TicketOrderSerializer(read_only=True, many=True)
+    event = EventSerializer(read_only=True)
 
     class Meta:
         model = Attendee
-        exclude = ("event",)
+        fields = "__all__"
+        # exclude = ("event",)
 
     def create(self, validated_data):
         request = self.context["request"]

@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
-from .models import Attendee, Event
+from .models import Attendee, Event, Tag
 from .serializers import AttendeeSerializer, EventSerializer
 
 
@@ -58,3 +58,24 @@ class RegisterForEventView(generics.CreateAPIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors)
+
+
+class SearchEventByTag(generics.RetrieveAPIView):
+    serializer_class = EventSerializer
+    permission_classes = (permissions.AllowAny,)
+    queryset = Event.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        tag = request.query_params["tag"]
+        tag = Tag.objects.filter(name=tag)
+        event = Event.objects.filter(tags__in=tag)
+        event_serializer = EventSerializer(event, many=True)
+        return Response(data=event_serializer.data, status=status.HTTP_200_OK)
+
+
+class ListAttendeeEvents(generics.ListAPIView):
+    serializer_class = AttendeeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Attendee.objects.filter(user=self.request.user)

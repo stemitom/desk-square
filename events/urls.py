@@ -20,4 +20,14 @@ urlpatterns = [
         views.RegisterForEventView.as_view(),
         name="register_for_event_view",
     ),
+    path(
+        "search",
+        views.SearchEventByTag.as_view(),
+        name="search_event_by_tag",
+    ),
+    path(
+        "me",
+        views.ListAttendeeEvents.as_view(),
+        name="list_all_attendee_events",
+    ),
 ]
