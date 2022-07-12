@@ -1,10 +1,8 @@
 from rest_framework import generics, permissions, status
-from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from .models import Event, Location, Media, Tag, Ticket, Attendee
-from .serializers import EventSerializer, AttendeeSerializer
+from .models import Attendee, Event
+from .serializers import AttendeeSerializer, EventSerializer
 
 
 class ListCreateEventView(generics.ListCreateAPIView):

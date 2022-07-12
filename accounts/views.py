@@ -1,3 +1,5 @@
+from secrets import token_hex
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import generics, permissions, status
@@ -5,7 +7,6 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from secrets import token_hex
 
 from .serializers import (
     ChangePasswordSerializer,

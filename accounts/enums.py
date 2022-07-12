@@ -1,4 +1,4 @@
-from django.db.models import IntegerChoices, TextChoices
+from django.db.models import TextChoices
 
 
 class UserPrefix(TextChoices):

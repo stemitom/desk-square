@@ -9,33 +9,50 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0014_remove_ticket_tickets_per_order_and_more'),
+        ("events", "0014_remove_ticket_tickets_per_order_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='attendee',
-            name='email',
-            field=models.EmailField(blank=True, db_index=True, max_length=100, null=True, verbose_name='email'),
+            model_name="attendee",
+            name="email",
+            field=models.EmailField(
+                blank=True,
+                db_index=True,
+                max_length=100,
+                null=True,
+                verbose_name="email",
+            ),
         ),
         migrations.AddField(
-            model_name='attendee',
-            name='guest',
-            field=models.BooleanField(default=False, verbose_name='guest'),
+            model_name="attendee",
+            name="guest",
+            field=models.BooleanField(default=False, verbose_name="guest"),
         ),
         migrations.AddField(
-            model_name='attendee',
-            name='name',
-            field=models.CharField(blank=True, max_length=20, null=True, verbose_name='name'),
+            model_name="attendee",
+            name="name",
+            field=models.CharField(
+                blank=True, max_length=20, null=True, verbose_name="name"
+            ),
         ),
         migrations.AlterField(
-            model_name='event',
-            name='creator',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='events', to=settings.AUTH_USER_MODEL),
+            model_name="event",
+            name="creator",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="events",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketorder',
-            name='tickets_purchased',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='orders', to='events.ticket'),
+            model_name="ticketorder",
+            name="tickets_purchased",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="orders",
+                to="events.ticket",
+            ),
         ),
     ]

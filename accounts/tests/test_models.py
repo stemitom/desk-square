@@ -1,4 +1,3 @@
-from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from accounts.models import User

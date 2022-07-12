@@ -11,52 +11,110 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0012_alter_tag_name'),
+        ("events", "0012_alter_tag_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Attendee',
+            name="Attendee",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='attendees', to='events.event')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='attendees', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="attendees",
+                        to="events.event",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="attendees",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created_at',),
+                "ordering": ("-created_at",),
             },
         ),
         migrations.RenameField(
-            model_name='ticket',
-            old_name='quantity',
-            new_name='quantity_available',
+            model_name="ticket",
+            old_name="quantity",
+            new_name="quantity_available",
         ),
         migrations.RenameField(
-            model_name='ticket',
-            old_name='price',
-            new_name='unit_price',
+            model_name="ticket",
+            old_name="price",
+            new_name="unit_price",
         ),
         migrations.CreateModel(
-            name='TicketOrder',
+            name="TicketOrder",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('quantity', models.PositiveIntegerField(default=1, verbose_name='quantity')),
-                ('order_id', models.UUIDField(db_index=True, default=uuid.uuid4, unique=True, verbose_name='order_id')),
-                ('tickets_purchased', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='events.ticket')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='orders', to='events.attendee')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
+                (
+                    "quantity",
+                    models.PositiveIntegerField(default=1, verbose_name="quantity"),
+                ),
+                (
+                    "order_id",
+                    models.UUIDField(
+                        db_index=True,
+                        default=uuid.uuid4,
+                        unique=True,
+                        verbose_name="order_id",
+                    ),
+                ),
+                (
+                    "tickets_purchased",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="events.ticket",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="orders",
+                        to="events.attendee",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddConstraint(
-            model_name='attendee',
-            constraint=models.UniqueConstraint(fields=('user', 'event'), name='user_register_event_once'),
+            model_name="attendee",
+            constraint=models.UniqueConstraint(
+                fields=("user", "event"), name="user_register_event_once"
+            ),
         ),
     ]

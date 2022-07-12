@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
-
-from events.models import Event, Location, Media, Tag, Ticket, Attendee, TicketOrder
 from timezone_field.rest_framework import TimeZoneSerializerField
+
+from events.models import Attendee, Event, Location, Tag, Ticket, TicketOrder
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -81,7 +80,8 @@ class AttendeeSerializer(serializers.ModelSerializer):
         validated_data.update({"event": event})
         if Attendee.objects.filter(**validated_data).exists():
             raise serializers.ValidationError(
-                "You are already registered to this event! Please do check your email for registeration and ticket details or contact support"
+                """You are already registered to this event!
+                Please do check your email for registeration and ticket details or contact support"""
             )
         attendee = Attendee.objects.create(**validated_data)
         ticket = Ticket.objects.filter(event=event).first()

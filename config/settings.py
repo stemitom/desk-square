@@ -27,10 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Take environment variables from .env file
-try:
-    environ.Env.read_env(os.path.join(BASE_DIR, ".env.dev"))
-except:
-    pass
+environ.Env.read_env(os.path.join(BASE_DIR, ".env.dev"))
 
 
 # Quick-start development settings - unsuitable for production
@@ -208,15 +205,3 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.User"
-
-
-from celery.schedules import crontab
-
-import config.tasks
-
-CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
-        "task": "config.tasks.sample_task",
-        "schedule": crontab(minute="*/1"),
-    },
-}
