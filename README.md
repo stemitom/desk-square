@@ -12,10 +12,13 @@ The steps below will get you up and running with a local development environment
 - Docker
 - Docker-Compose
 
+## Steps
+- Clone the repo `git clone https://github.com/stemitom/desk-square`
+- Navigate to repo directory `cd desk-square`
+- Build and run the docker-compose file `docker-compose up -d build`
+- Create a superuser `docker-compose exec web poetry run python manage.py createsuperuser`
 
 
-# Documentation
+# Postman Documentation
 
-You can run the published Postman documentation at
-
-
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1f81891a63eb37a94a5e?action=collection%2Fimport)
