@@ -16,12 +16,14 @@ User = get_user_model()
 
 
 def create_account_activation_url(uid, token, request):
+    """This builds the url link account activation"""
     endpoint = reverse("accounts:activate", kwargs={"uid": uid, "token": token})
     url = request.build_absolute_uri(endpoint)
     return url
 
 
 def send_mail(user_pk: int, request: Request, mail_type: str):
+    """Utility function to implement sending of mail for both password reset and account activation"""
     var = {
         "activation": {
             "name": "activate",
