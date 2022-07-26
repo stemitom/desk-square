@@ -110,7 +110,7 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError("Passwords must match")
         if data["new_pw"] == data["old_pw"]:
             raise serializers.ValidationError(
-                "Old and New pasword cannot be the same. Please check and try again"
+                "Old and New password cannot be the same. Please check and try again"
             )
         return data
 

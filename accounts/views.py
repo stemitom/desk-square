@@ -63,7 +63,7 @@ class RequestActivationView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
-        send_async_account_activation_mail(request.user.pk, request)
+        send_async_account_activation_mail(self.request.user.pk, self.request)
 
         return Response(
             {
@@ -76,20 +76,20 @@ class RequestActivationView(APIView):
 class ActivateAccountView(GenericAPIView):
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, *args, **kwargs):
-        user, is_valid = verify_uid_and_token(**kwargs, type="activation")
+    def get(self, *args, **kwargs):
+        user, is_valid = verify_uid_and_token(**kwargs, token_type="activation")
         if is_valid:
             if user.is_email_verified:
                 return Response(
                     {"message": "Account has already been activated!"},
-                    status=status.HTTP_409,
+                    status=status.HTTP_409_CONFLICT,
                 )
             user.is_email_verified = True
             user.email_verified_at = timezone.now()
             user.save()
 
             return Response(
-                {"message": "Your account has been activated sucessfully!"},
+                {"message": "Your account has been activated successfully!"},
                 status=status.HTTP_200_OK,
             )
         return Response(
@@ -102,9 +102,9 @@ class ChangePasswordView(GenericAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def put(self, request, *args):
+    def put(self, *args, **kwargs):
         serializer = self.get_serializer(
-            data=request.data, context={"request": request}
+            data=self.request.data, context={"request": self.request}
         )
         if serializer.is_valid():
             serializer.save()
@@ -115,13 +115,13 @@ class ChangePasswordView(GenericAPIView):
 class RequestPasswordResetView(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def post(self, request, *args):
-        data = request.data
+    def post(self, *args, **kwargs):
+        data = self.request.data
         email = data.get("email", token_hex(6))
         User = get_user_model()
         user = User.objects.filter(email=email).first()
         if user:
-            send_async_password_reset_mail(user.pk, request)
+            send_async_password_reset_mail(user.pk, self.request)
         return Response(
             {"message": "Please do check your email for further instructions!"},
             status=status.HTTP_200_OK,

@@ -6,7 +6,7 @@ from django.utils import timezone
 from config.celery import app
 
 from .models import User
-from .utils import send_activation_mail, send_passsword_reset_mail
+from .utils import send_activation_mail, send_password_reset_mail
 
 
 @shared_task
@@ -22,4 +22,4 @@ def send_async_account_activation_mail(user_pk, request):
 
 @app.task
 def send_async_password_reset_mail(email, request):
-    send_passsword_reset_mail(email, request)
+    send_password_reset_mail(email, request)

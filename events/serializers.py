@@ -83,7 +83,7 @@ class AttendeeSerializer(serializers.ModelSerializer):
         if Attendee.objects.filter(**validated_data).exists():
             raise serializers.ValidationError(
                 """You are already registered to this event!
-                Please do check your email for registeration and ticket details or contact support"""
+                Please do check your email for registration and ticket details or contact support"""
             )
         attendee = Attendee.objects.create(**validated_data)
         ticket = Ticket.objects.filter(event=event).first()
