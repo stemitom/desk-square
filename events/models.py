@@ -178,10 +178,10 @@ class Ticket(TimeAndUUIDStampedBaseModel):
 
 class TicketOrder(TimeAndUUIDStampedBaseModel):
     user = models.ForeignKey(
-        Attendee, on_delete=models.DO_NOTHING, related_name="ticket_orders"
+        Attendee, on_delete=models.CASCADE, related_name="ticket_orders"
     )
     tickets_purchased = models.ForeignKey(
-        Ticket, on_delete=models.DO_NOTHING, related_name="orders"
+        Ticket, on_delete=models.CASCADE, related_name="orders"
     )
     quantity = models.PositiveIntegerField(_("quantity"), default=1)
     order_id = models.UUIDField(

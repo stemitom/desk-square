@@ -44,11 +44,7 @@ def send_mail(user_pk: int, request: Request, mail_type: str):
     template = var[mail_type]["template"]
     subject = var[mail_type]["subject"]
 
-    try:
-        user = User.objects.get(pk=user_pk)
-    except User.DoesNotExist:
-        logger.warning(f"Error: User does not exist -> {user_pk}")
-        pass
+    user = User.objects.get(pk=user_pk)
 
     uid = urlsafe_base64_encode(force_bytes(user_pk))
     token = token.make_token(user)
