@@ -27,13 +27,13 @@ def send_mail(user_pk: int, request: Request, mail_type: str):
             "name": "activate",
             "token": account_activation_token,
             "template": "activation.htm",
-            "subject": "Activate Your Account"
+            "subject": "Activate Your Account",
         },
         "reset": {
             "name": "reset",
             "token": account_password_reset_token,
             "template": "password_reset.htm",
-            "subject": "Reset Your Password"
+            "subject": "Reset Your Password",
         },
     }
 
@@ -62,7 +62,9 @@ def send_mail(user_pk: int, request: Request, mail_type: str):
     mail.attach_alternative(html_content, "text/html")
     mail.send()
 
-    logger.info(f"{mail_type}.capitalize() email successfully sent to -> {user.username}")
+    logger.info(
+        f"{mail_type}.capitalize() email successfully sent to -> {user.username}"
+    )
 
 
 def send_activation_mail(user_pk: int, request: Request):
