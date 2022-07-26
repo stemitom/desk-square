@@ -1,5 +1,3 @@
-from secrets import token_hex
-
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import generics, permissions, status
@@ -117,7 +115,7 @@ class RequestPasswordResetView(APIView):
 
     def post(self, *args, **kwargs):
         data = self.request.data
-        email = data.get("email", token_hex(6))
+        email = data.get("email")
         User = get_user_model()
         user = User.objects.filter(email=email).first()
         if user:
