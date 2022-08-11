@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0017_alter_attendee_name'),
+        ("events", "0017_alter_attendee_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketorder',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='ticket_orders', to='events.attendee'),
+            model_name="ticketorder",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="ticket_orders",
+                to="events.attendee",
+            ),
         ),
     ]
