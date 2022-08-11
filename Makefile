@@ -1,38 +1,15 @@
-# include .env
+LINT_PATHS = ./ manage.py
+ISORT_PARAMS = --ignore-whitespace  $(LINT_PATHS)
+ISORT_CHECK_PARAMS = --diff --check-only
+BLACK_CHECK_PARAMS = --diff --color --check
 
-.PHONY: help
-help: ## Show this help
-	@egrep -h '\s##\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+lint:
+	isort $(ISORT_PARAMS) $(ISORT_CHECK_PARAMS)
+	flake8 $(LINT_PATHS)
+	black $(BLACK_CHECK_PARAMS) ./
 
-.PHONY: venv
-poetry: ## Make a new virtual environment
-	python -m pip install --upgrade poetry 
+run-dev:
+	python manage.py runserver
 
-.PHONY: activate	
-activate: ## Activate the created environment
-	poetry shell	
-
-.PHONY: install
-install: activate ## Make venv and install requirements
-	poetry install
-
-.PHONY: migrate
-migrate: activate## Make and run migrations
-	python3 manage.py makemigrations
-	python3 manage.py migrate
-
-.PHONY: test
-test: ## Run tests
-	python3 manage.py test 
-
-.PHONY: run
-run: activate## Run the Django server
-	python3 manage.py runserver
-
-# styling
-style: ## Lint the python project
-	isort .
-	black .
-	flake8
-
-start: install migrate run ## Install requirements, apply migrations, then start development server
+test:
+	python mange.py test
