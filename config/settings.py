@@ -27,7 +27,7 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Take environment variables from .env file
+# Take environment variables from .env.dev file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env.dev"))
 
 
@@ -35,12 +35,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env.dev"))
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 
 # Application definition
@@ -105,10 +105,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("POSTGRES_USER", "user"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("POSTGRES_DB", "postgres"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }

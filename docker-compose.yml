@@ -7,7 +7,7 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./scripts:/docker-entrypoint-initdb.d
     env_file:
-      - ./.env.dev
+      - .env.dev
     ports:
       - 5433:5432
 
@@ -17,7 +17,7 @@ services:
       - rabbitmq-data:/var/lib/rabbitmq
     restart: always
     env_file:
-      - ./.env.dev
+      - .env.dev
     ports:
       - 5672:5672
       - 15672:15672
@@ -28,7 +28,7 @@ services:
     volumes:
       - .:/code
     env_file:
-      - ./.env.dev
+      - .env.dev
     depends_on:
       - rabbitmq
 
@@ -38,7 +38,7 @@ services:
     volumes:
       - .:/code
     env_file:
-      - ./.env.dev
+      - .env.dev
     depends_on:
       - rabbitmq
 
@@ -58,7 +58,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./.env.dev
+      - .env.dev
     depends_on:
       - db
       - mailhog
