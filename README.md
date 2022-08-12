@@ -27,4 +27,4 @@ The steps below will get you up and running with a local development environment
 # Project To-Do
 - [ ] Add Project documentation to github README.md
 - [ ] Add Payment feature through stripe
-- [ ] Move existing tests to Pytest Add more (and better) tests 
+- [ ] Move existing tests to Pytest and add more (and better) tests 
