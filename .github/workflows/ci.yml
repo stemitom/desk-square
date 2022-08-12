@@ -59,7 +59,7 @@ jobs:
       - name: Run Code Analysis
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
-          DJANGO_SETTINGS_MODULE: 'desk-square.settings'
+          DJANGO_SETTINGS_MODULE: 'config.settings'
           SECRET_KEY: 'abcd123$<12@kskdmdmsecretkeydsndm@'
           CONN_MAX_AGE: 60
         run: poetry run make lint
@@ -136,7 +136,7 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
-          DJANGO_SETTINGS_MODULE: 'desk-square.settings'
+          DJANGO_SETTINGS_MODULE: 'config.settings'
           SECRET_KEY: 'abcd123$<12@kskdmdmsecretkeydsndm@'
           CONN_MAX_AGE: 60
         run: |
