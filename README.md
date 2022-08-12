@@ -22,3 +22,9 @@ The steps below will get you up and running with a local development environment
 # Postman Documentation
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1f81891a63eb37a94a5e?action=collection%2Fimport)
+
+
+# Project To-Do
+- [ ] Add Project documentation to github README.md
+- [ ] Add Payment feature through stripe
+- [ ] Move existing tests to Pytest Add more (and better) tests 
