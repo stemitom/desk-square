@@ -17,7 +17,9 @@ RUN pip install poetry==1.1.13
 
 # install project dependencies
 COPY poetry.lock pyproject.toml ./
-RUN poetry install --no-dev --no-root
+# RUN poetry install --no-dev --no-root
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-interaction --no-ansi
 
 # copy entrypoint and script to confirm postgres and rabbit are healthy
 COPY ./wait-for-postgres.sh .
