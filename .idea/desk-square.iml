@@ -14,7 +14,7 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Poetry (desk-square)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.9.13 Docker Compose (web at [/Users/mac/PycharmProjects/desk-square/docker-compose.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

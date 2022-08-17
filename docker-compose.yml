@@ -9,7 +9,7 @@ services:
     env_file:
       - .env.dev
     ports:
-      - 5433:5432
+      - "5433:5432"
 
   rabbitmq:
     image: rabbitmq:3.9-management
@@ -19,8 +19,8 @@ services:
     env_file:
       - .env.dev
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
 
   celery-worker:
     build: .
@@ -47,8 +47,8 @@ services:
     logging:
       driver: 'none'
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "1025:1025"
+      - "8025:8025"
 
   web:
     build: .
