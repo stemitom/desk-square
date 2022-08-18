@@ -25,29 +25,31 @@ def password():
 
 
 @pytest.fixture
-def auto_login_user(db, client, password):
+def auto_login_user(db, api_client, password):
     def make_auto_login(user=None):
         if user is None:
             user = UserFactory(password=password)
-        response = client.login(username=user.username, password=password)
+        response = api_client.login(username=user.username, password=password)
         print(response)
-        return client, user
+        return api_client, user
 
     return make_auto_login
 
 
 @pytest.fixture
-def auto_login_user_jwt_response(db, client, password):
+def auto_login_user_jwt_response(db, api_client, password):
     def make_auto_login(user=None):
         if user is None:
             user = UserFactory(password=password)
         url = reverse("accounts:login")
         data = {"email": user.email, "password": password}
-        response = client.post(url, data=data)
-        response = response.json()
-        print(response)
-        return client, user, response
-
+        response = api_client.post(url, data=data)
+        body = response.json()
+        if "access" in body:
+            api_client.credentials(
+                HTTP_AUTHORIZATION='Bearer %s' % body['access']
+            )
+        return response.status_code, body
     return make_auto_login
 
 
@@ -113,14 +115,8 @@ def test_login(auto_login_user, password, api_client):
 
 
 @pytest.mark.django_db
-def test_logout(auto_login_user_jwt_response):
-    client, user, data = auto_login_user_jwt_response()
-    assert user.is_authenticated is True
-    url = reverse("accounts:logout")
-    data = {"refresh": data["refresh"], "access": data["access"]}
-    headers = {"Authorization": f"Bearer {data['access']}"}
-    print(headers)
-    response = client.post(url, data=data, headers=headers)
-    print(response.content)
+def test_logout(auto_login_user_jwt_response, api_client):
+    _, body = auto_login_user_jwt_response()
+    data = {'refresh': body['refresh']}
+    response = api_client.post(reverse("accounts:logout"), data)
     assert response.status_code == 204
-    assert user.is_authenticated is False
