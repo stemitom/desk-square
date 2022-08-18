@@ -96,12 +96,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     )
     new_pw_conf = serializers.CharField(write_only=True, required=True)
 
-    def validate(self, data):
+    def validate_old_pw(self, old_pw):
         user = self.context["request"].user
-        if not user.check_password(data["old_pw"]):
+        if not user.check_password(old_pw):
             raise serializers.ValidationError(
                 "Password is incorrect. Please check and try again!"
             )
+
+    def validate(self, data):
         if data["new_pw"] != data["new_pw_conf"]:
             raise serializers.ValidationError("Passwords must match")
         if data["new_pw"] == data["old_pw"]:
