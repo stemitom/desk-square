@@ -2,10 +2,11 @@ import pytest
 from accounts.models import User
 from accounts.tests.factories import UserFactory
 
+
 @pytest.mark.django_db
 def test_user_model():
     user = UserFactory()
-    assert str(user) == user.email
+    assert User.objects.count() == 1
 
 @pytest.mark.django_db
 def test_user_can_soft_delete():

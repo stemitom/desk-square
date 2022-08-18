@@ -3,6 +3,7 @@ import faker
 import factory.fuzzy
 from accounts.models import User
 from accounts.enums import UserPrefix
+from django.utils import timezone
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -22,7 +23,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     country = factory.Faker("country_code")
     postal_code = factory.Faker("postalcode")
     is_email_verified = factory.Faker("pybool")
-    email_verified_at = factory.Faker("date_time")
+    email_verified_at = factory.Faker("date_time", tzinfo=timezone.get_current_timezone())
     password = factory.PostGenerationMethodCall('set_password', faker.Faker().password(
         length=20,
         special_chars=True,
@@ -30,8 +31,3 @@ class UserFactory(factory.django.DjangoModelFactory):
         upper_case=True,
         lower_case=True,
     ))
-
-
-
-
-
