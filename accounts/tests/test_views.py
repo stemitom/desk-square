@@ -29,8 +29,24 @@ def auto_login_user(db, client, password):
     def make_auto_login(user=None):
         if user is None:
             user = UserFactory(password=password)
-        client.login(username=user.username, password=password)
+        response = client.login(username=user.username, password=password)
+        print(response)
         return client, user
+
+    return make_auto_login
+
+
+@pytest.fixture
+def auto_login_user_jwt_response(db, client, password):
+    def make_auto_login(user=None):
+        if user is None:
+            user = UserFactory(password=password)
+        url = reverse("accounts:login")
+        data = {"email": user.email, "password": password}
+        response = client.post(url, data=data)
+        response = response.json()
+        print(response)
+        return client, user, response
 
     return make_auto_login
 
@@ -87,9 +103,24 @@ def test_signup_data_validation(
 
 
 @pytest.mark.django_db
-def test_login(auto_login_user, password):
+def test_login(auto_login_user, password, api_client):
     client, user = auto_login_user()
     url = reverse("accounts:login")
     data = {"email": user.email, "password": password}
-    response = client.post(url, data=data)
+    response = api_client.post(url, data=data)
     assert response.status_code == 200
+    assert user.is_authenticated is True
+
+
+@pytest.mark.django_db
+def test_logout(auto_login_user_jwt_response):
+    client, user, data = auto_login_user_jwt_response()
+    assert user.is_authenticated is True
+    url = reverse("accounts:logout")
+    data = {"refresh": data["refresh"], "access": data["access"]}
+    headers = {"Authorization": f"Bearer {data['access']}"}
+    print(headers)
+    response = client.post(url, data=data, headers=headers)
+    print(response.content)
+    assert response.status_code == 204
+    assert user.is_authenticated is False
