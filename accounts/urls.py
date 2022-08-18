@@ -4,16 +4,20 @@ from . import views
 
 app_name = "accounts"
 urlpatterns = [
-    path("me", views.CurrentUserView.as_view(), name="logged_in_user_details"),
+    path(
+        "profile",
+        views.CurrentUserView.as_view(),
+        name="profile"
+    ),
     path(
         "list-users",
         views.ListUsersView.as_view(),
         name="list-users",
     ),
     path(
-        "registration",
+        "signup",
         views.SignupView.as_view(),
-        name="registration",
+        name="signup",
     ),
     path(
         "login",
