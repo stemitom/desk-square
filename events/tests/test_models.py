@@ -50,9 +50,9 @@ class TestModels(TestCase):
         event.tickets.create(
             name="Ticket #1",
             description="VIP Ticket",
-            quantity="100",
-            price=5.50,
-            tickets_per_order=1,
+            quantity_available="100",
+            unit_price=5.50,
+            max_tickets_per_order=1,
         )
 
     def test_event_creation(self) -> None:
