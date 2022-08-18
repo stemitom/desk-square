@@ -51,7 +51,7 @@ def test_authorized_request(api_client_with_credentials):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "username, email, first_name, last_name, password1, password2, status_code",
+    "username, email, first_name, last_name, password, status_code",
     [
         (
             "useristryingtodotoomuch",
@@ -59,11 +59,10 @@ def test_authorized_request(api_client_with_credentials):
             "test",
             "user",
             "strong_pass",
-            "strong_pass",
             400,
         ),
-        ("user", "user@example.com", "test", "user", "weak", "weak", 400),
-        ("user", "user@example.com", "test", "user", "strong_pass", "strong_pass", 201),
+        ("user", "user@example.com", "test", "user", "weak", 400),
+        ("user", "user@example.com", "test", "user", "strong_pass", 201),
     ],
 )
 def test_signup_data_validation(
@@ -71,8 +70,7 @@ def test_signup_data_validation(
     email,
     first_name,
     last_name,
-    password1,
-    password2,
+    password,
     status_code,
     api_client,
 ):
@@ -82,8 +80,7 @@ def test_signup_data_validation(
         "email": email,
         "first_name": first_name,
         "last_name": last_name,
-        "password1": password1,
-        "password2": password2,
+        "password": password,
     }
     response = api_client.post(url, data=data)
     assert response.status_code == status_code
