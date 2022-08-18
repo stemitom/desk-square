@@ -11,6 +11,11 @@ urlpatterns = [
         name="list_users",
     ),
     path(
+        "<pk>",
+        views.DetailUserView.as_view(),
+        name="user"
+    ),
+    path(
         "registration",
         views.SignupView.as_view(),
         name="registration",
