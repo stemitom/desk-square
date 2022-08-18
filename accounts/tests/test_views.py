@@ -77,7 +77,7 @@ def test_authorized_request(api_client_with_credentials):
     "username, email, first_name, last_name, password, status_code",
     [
         (
-            "useristryingtodotoomuch",
+            "user-is-trying-to-do-too-much",
             "user@example.com",
             "test",
             "user",
@@ -157,7 +157,7 @@ def test_access_token_still_valid_after_logout(
 
 
 @pytest.mark.django_db
-def test_access_token_invalid_after_an_house(auto_login_user_jwt_response, api_client):
+def test_access_token_invalid_after_an_hour(auto_login_user_jwt_response, api_client):
     _, body = auto_login_user_jwt_response()
     api_client.post(reverse("accounts:logout"), body)
     m = mock.Mock()
