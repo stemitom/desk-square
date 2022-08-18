@@ -580,6 +580,20 @@ docs = ["sphinx", "sphinx-rtd-theme"]
 testing = ["django", "django-configurations (>=2.0)"]
 
 [[package]]
+name = "pytest-mock"
+version = "3.8.2"
+description = "Thin-wrapper around the mock package for easier use with pytest"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+pytest = ">=5.0"
+
+[package.extras]
+dev = ["pre-commit", "tox", "pytest-asyncio"]
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -657,7 +671,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.12"
-content-hash = "c274b0729d649b2ab4ac663674e85c05a13606a2cf0947a538a09ca6a82c53b1"
+content-hash = "b9d5b4fdad69adf3e9618c5570f7a97298ed451cc2b7b70d4a622b057ecf1dcc"
 
 [metadata.files]
 amqp = []
@@ -792,6 +806,7 @@ pyjwt = [
 pyparsing = []
 pytest = []
 pytest-django = []
+pytest-mock = []
 python-dateutil = []
 pytz = [
     {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},

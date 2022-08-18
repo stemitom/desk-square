@@ -1,5 +1,11 @@
+from datetime import timedelta
+from functools import partial
+from unittest import mock
+
 import pytest
 from django.urls import reverse
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken, aware_utcnow
 
 from accounts.tests.factories import UserFactory
 
@@ -114,8 +120,48 @@ def test_login(auto_login_user, password, api_client):
 
 
 @pytest.mark.django_db
-def test_logout(auto_login_user_jwt_response, api_client):
+def test_logout_response_204(auto_login_user_jwt_response, api_client):
     _, body = auto_login_user_jwt_response()
     data = {"refresh": body["refresh"]}
     response = api_client.post(reverse("accounts:logout"), data)
     assert response.status_code == 204
+
+
+@pytest.mark.django_db
+def test_logout_with_bad_refresh_token_response_400(
+    auto_login_user_jwt_response, api_client
+):
+    _, body = auto_login_user_jwt_response()
+    data = {"refresh": "random-bad-refresh-token"}
+    response = api_client.post(reverse("accounts:logout"), data)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_logout_refresh_token_in_blacklist(auto_login_user_jwt_response, api_client):
+    _, body = auto_login_user_jwt_response()
+    api_client.post(reverse("accounts:logout"), body)
+    token = partial(RefreshToken, body["refresh"])
+    with pytest.raises(TokenError):
+        token()
+
+
+@pytest.mark.django_db
+def test_access_token_still_valid_after_logout(
+    auto_login_user_jwt_response, api_client
+):
+    _, body = auto_login_user_jwt_response()
+    api_client.post(reverse("accounts:logout"), body)
+    response = api_client.get(reverse("accounts:profile"))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_access_token_invalid_after_an_house(auto_login_user_jwt_response, api_client):
+    _, body = auto_login_user_jwt_response()
+    api_client.post(reverse("accounts:logout"), body)
+    m = mock.Mock()
+    m.return_value = aware_utcnow() + timedelta(minutes=60)
+    with mock.patch("rest_framework_simplejwt.tokens.aware_utcnow", m):
+        response = api_client.get(reverse("accounts:profile"))
+    assert response.status_code == 401
