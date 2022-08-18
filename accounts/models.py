@@ -57,7 +57,7 @@ class User(SoftDeleteBaseModel, AbstractUser, TimeAndUUIDStampedBaseModel):
     company = models.CharField(_("company"), max_length=100, null=True, blank=True)
     website = models.URLField(_("website"), max_length=100, null=True, blank=True)
     blog = models.URLField(_("blog"), max_length=100, null=True, blank=True)
-    country = CountryField(_("country"), null=True, blank=True, default='GB')
+    country = CountryField(_("country"), null=True, blank=True, default="GB")
     postal_code = models.IntegerField(_("postal_code"), null=True, blank=True)
     is_email_verified = models.BooleanField(_("is_email_verified"), default=False)
     email_verified_at = models.DateTimeField(

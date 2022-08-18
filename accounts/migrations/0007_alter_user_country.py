@@ -7,13 +7,19 @@ import django_countries.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0006_alter_user_managers'),
+        ("accounts", "0006_alter_user_managers"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='country',
-            field=django_countries.fields.CountryField(blank=True, default='GB', max_length=2, null=True, verbose_name='country'),
+            model_name="user",
+            name="country",
+            field=django_countries.fields.CountryField(
+                blank=True,
+                default="GB",
+                max_length=2,
+                null=True,
+                verbose_name="country",
+            ),
         ),
     ]

@@ -4,11 +4,7 @@ from . import views
 
 app_name = "accounts"
 urlpatterns = [
-    path(
-        "profile",
-        views.CurrentUserView.as_view(),
-        name="profile"
-    ),
+    path("profile", views.CurrentUserView.as_view(), name="profile"),
     path(
         "list-users",
         views.ListUsersView.as_view(),
@@ -50,5 +46,4 @@ urlpatterns = [
         name="request-password-reset",
     ),
     path("<pk>", views.DetailUserView.as_view(), name="user"),
-
 ]
