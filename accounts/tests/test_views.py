@@ -197,7 +197,7 @@ def test_change_password_wrong_old_password_400(
     response = api_client.put(
         reverse("accounts:change-password"),
         data={
-            "old_pw": "random-old-password",
+            "old_pw": "wrong-old-password",
             "new_pw": fake_password,
             "new_pw_conf": fake_password,
         },
