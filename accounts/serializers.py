@@ -23,16 +23,15 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_password(self, password):
         password_minimum_length = 8
         if len(password) < password_minimum_length:
-            raise serializers.ValidationError(f"Password minimum length allowed is {password_minimum_length}")
+            raise serializers.ValidationError(
+                f"Password minimum length allowed is {password_minimum_length}"
+            )
 
     def create(self, validated_data):
         data = {
             key: value
             for key, value in validated_data.items()
-            if key
-            not in (
-                "password",
-            )
+            if key not in ("password",)
         }
         data["password"] = validated_data["password"]
         user = self.Meta.model.objects.create_user(**data)
