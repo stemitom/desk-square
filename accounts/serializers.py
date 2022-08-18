@@ -8,8 +8,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     def validate_email(self, email):
         if User.objects.filter(email__iexact=email).exists():
@@ -21,10 +20,10 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("That username is not available")
         return username
 
-    def validate(self, data):
-        if data["password1"] != data["password2"]:
-            raise serializers.ValidationError("Passwords must match")
-        return data
+    def validate_password(self, password):
+        password_minimum_length = 8
+        if len(password) < password_minimum_length:
+            raise serializers.ValidationError(f"Password minimum length allowed is {password_minimum_length}")
 
     def create(self, validated_data):
         data = {
@@ -32,11 +31,10 @@ class UserSerializer(serializers.ModelSerializer):
             for key, value in validated_data.items()
             if key
             not in (
-                "password1",
-                "password2",
+                "password",
             )
         }
-        data["password"] = validated_data["password1"]
+        data["password"] = validated_data["password"]
         user = self.Meta.model.objects.create_user(**data)
         user.save()
         return user
@@ -47,8 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
-            "password1",
-            "password2",
+            "password",
             "first_name",
             "last_name",
             "prefix",
