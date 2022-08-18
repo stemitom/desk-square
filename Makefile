@@ -8,6 +8,12 @@ lint:
 	flake8 $(LINT_PATHS)
 	black $(BLACK_CHECK_PARAMS) ./
 
+force-lint:
+	isort $(ISORT_PARAMS)
+	flake8 $(LINT_PATHS)
+	black ./
+
+
 run-dev:
 	python manage.py runserver
 
