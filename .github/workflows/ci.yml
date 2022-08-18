@@ -140,5 +140,5 @@ jobs:
           SECRET_KEY: 'abcd123$<12@kskdmdmsecretkeydsndm@'
           CONN_MAX_AGE: 60
         run: |
-          poetry run make test
+          poetry run pytest
           poetry run python manage.py migrate --no-input
