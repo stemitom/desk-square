@@ -8,9 +8,8 @@ urlpatterns = [
     path(
         "list-users",
         views.ListUsersView.as_view(),
-        name="list_users",
+        name="list-users",
     ),
-    path("<pk>", views.DetailUserView.as_view(), name="user"),
     path(
         "registration",
         views.SignupView.as_view(),
@@ -29,7 +28,7 @@ urlpatterns = [
     path(
         "request-activation",
         views.RequestActivationView.as_view(),
-        name="request_activation",
+        name="request-activation",
     ),
     path(
         "activate/<str:uid>/<str:token>",
@@ -39,11 +38,13 @@ urlpatterns = [
     path(
         "change-password",
         views.ChangePasswordView.as_view(),
-        name="change_password",
+        name="change-password",
     ),
     path(
         "request-password-reset",
         views.RequestPasswordResetView.as_view(),
-        name="request_password_reset",
+        name="request-password-reset",
     ),
+    path("<pk>", views.DetailUserView.as_view(), name="user"),
+
 ]
