@@ -46,10 +46,9 @@ def auto_login_user_jwt_response(db, api_client, password):
         response = api_client.post(url, data=data)
         body = response.json()
         if "access" in body:
-            api_client.credentials(
-                HTTP_AUTHORIZATION='Bearer %s' % body['access']
-            )
+            api_client.credentials(HTTP_AUTHORIZATION="Bearer %s" % body["access"])
         return response.status_code, body
+
     return make_auto_login
 
 
@@ -117,6 +116,6 @@ def test_login(auto_login_user, password, api_client):
 @pytest.mark.django_db
 def test_logout(auto_login_user_jwt_response, api_client):
     _, body = auto_login_user_jwt_response()
-    data = {'refresh': body['refresh']}
+    data = {"refresh": body["refresh"]}
     response = api_client.post(reverse("accounts:logout"), data)
     assert response.status_code == 204
