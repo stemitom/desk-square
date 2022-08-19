@@ -110,9 +110,7 @@ def test_user_profile_200(auto_login_user_jwt_response, api_client):
     _, _, user = auto_login_user_jwt_response()
     response = api_client.get(reverse("accounts:profile"))
     body = response.json()
-    user_dict = json.loads(serializers.serialize("json", [user,]))[
-        0
-    ]["fields"]
+    user_dict = json.loads(serializers.serialize("json", [user]))[0]["fields"]
 
     del user_dict["password"]
     del body["id"]
