@@ -39,18 +39,6 @@ def fake_password():
 
 
 @pytest.fixture
-def auto_login_user(db, api_client, password):
-    def make_auto_login(user=None):
-        if user is None:
-            user = UserFactory(password=password)
-        response = api_client.login(username=user.username, password=password)
-        print(response)
-        return api_client, user
-
-    return make_auto_login
-
-
-@pytest.fixture
 def auto_login_user_jwt_response(db, api_client, password):
     def make_auto_login(user=None):
         if user is None:
@@ -85,7 +73,7 @@ def test_authorized_request_200(api_client_with_credentials):
     "username, email, first_name, last_name, password, status_code",
     [
         (
-            "user-is-trying-to-do-too-much",
+            "user-is-doing-too-much",
             "user@example.com",
             "test",
             "user",
@@ -119,7 +107,6 @@ def test_signup_data_validation(
 
 @pytest.mark.django_db
 def test_user_profile_200(auto_login_user_jwt_response, api_client):
-    auto_login_user_jwt_response()
     _, _, user = auto_login_user_jwt_response()
     response = api_client.get(reverse("accounts:profile"))
     body = response.json()
@@ -135,8 +122,8 @@ def test_user_profile_200(auto_login_user_jwt_response, api_client):
 
 
 @pytest.mark.django_db
-def test_login(auto_login_user, password, api_client):
-    client, user = auto_login_user()
+def test_login_200(auto_login_user_jwt_response, password, api_client):
+    _, _, user = auto_login_user_jwt_response()
     url = reverse("accounts:login")
     data = {"email": user.email, "password": password}
     response = api_client.post(url, data=data)
@@ -185,7 +172,7 @@ def test_access_token_still_valid_after_logout_200(
 def test_access_token_invalid_after_an_hour_401(
     auto_login_user_jwt_response, api_client
 ):
-    _, body, _ = auto_login_user_jwt_response()
+    _, body, user = auto_login_user_jwt_response()
     api_client.post(reverse("accounts:logout"), body)
     m = mock.Mock()
     m.return_value = aware_utcnow() + timedelta(minutes=60)
