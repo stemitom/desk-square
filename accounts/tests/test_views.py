@@ -106,7 +106,7 @@ def test_signup_data_validation(
 
 
 @pytest.mark.django_db
-def test_user_profile_200(auto_login_user_jwt_response, api_client):
+def test_authenticated_user_profile_200(auto_login_user_jwt_response, api_client):
     _, _, user = auto_login_user_jwt_response()
     response = api_client.get(reverse("accounts:profile"))
     body = response.json()
@@ -117,6 +117,14 @@ def test_user_profile_200(auto_login_user_jwt_response, api_client):
 
     assert response.status_code == 200
     all(item in user_dict.items() for item in body.items())
+
+
+@pytest.mark.django_db
+def test_detail_user_200(api_client_with_credentials):
+    user = UserFactory()
+    url = reverse("accounts:user", args=[user.pk])
+    response = api_client_with_credentials.get(url)
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
