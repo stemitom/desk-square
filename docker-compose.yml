@@ -5,7 +5,7 @@ services:
     image: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./scripts:/docker-entrypoint-initdb.d
+      - ./pg-scripts:/docker-entrypoint-initdb.d
     env_file:
       - .env.dev
     ports:
@@ -52,7 +52,7 @@ services:
 
   web:
     build: .
-    command: poetry run python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
