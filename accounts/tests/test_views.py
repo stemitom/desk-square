@@ -4,13 +4,18 @@ from functools import partial
 from unittest import mock
 
 import pytest
-from django.core import serializers
+from django.core import mail, serializers
 from django.urls import reverse
 from faker import Faker
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, aware_utcnow
 
 from accounts.tests.factories import UserFactory
+
+
+@pytest.fixture(autouse=True)
+def email_backend_setup(settings):
+    settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 
 @pytest.fixture
@@ -233,3 +238,16 @@ def test_change_password_non_matching_new_password_400(
         },
     )
     assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_request_activation_200(api_client_with_credentials):
+    url = reverse("accounts:request-activation")
+    response = api_client_with_credentials.get(url)
+    assert response.status_code == 200
+    assert len(mail.outbox) == 1
+
+
+@pytest.mark.django_db
+def test_activation_mail_200(api_client):
+    pass

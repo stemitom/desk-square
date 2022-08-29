@@ -30,8 +30,9 @@ The steps below will get you up and running with a local development environment
 - [ ] Move existing tests to Pytest and add more (comprehensive) tests
   - [ ] Accounts
     - [ ] Views
-      - [x] Login
+      - [x] Login (1)
       - [x] Signup (1)[3]
       - [x] User Profile (1)
       - [x] Logout (5)
       - [x] Change Password (3)
+      - [x] Request Activation (1) 
