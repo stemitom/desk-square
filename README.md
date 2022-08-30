@@ -36,3 +36,4 @@ The steps below will get you up and running with a local development environment
       - [x] Logout (5)
       - [x] Change Password (3)
       - [x] Request Activation (1) 
+      - [x] Request Password Reset (2) 

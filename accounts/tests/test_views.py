@@ -44,6 +44,11 @@ def fake_password():
 
 
 @pytest.fixture
+def fake_email():
+    return Faker().email()
+
+
+@pytest.fixture
 def auto_login_user_jwt_response(db, api_client, password):
     def make_auto_login(user=None):
         if user is None:
@@ -246,6 +251,28 @@ def test_request_activation_200(api_client_with_credentials):
     response = api_client_with_credentials.get(url)
     assert response.status_code == 200
     assert len(mail.outbox) == 1
+
+
+@pytest.mark.django_db
+def test_password_reset_request_valid_email_200(
+    auto_login_user_jwt_response, api_client
+):
+    _, _, user = auto_login_user_jwt_response()
+    url = reverse("accounts:request-password-reset")
+    response = api_client.post(url, data={"email": user.email})
+    assert response.status_code == 200
+    assert len(mail.outbox) == 1
+
+
+@pytest.mark.django_db
+def test_password_reset_request_register_invalid_email_200(
+    auto_login_user_jwt_response, api_client, fake_email
+):
+    _, _, user = auto_login_user_jwt_response()
+    url = reverse("accounts:request-password-reset")
+    response = api_client.post(url, data={"email": fake_email})
+    assert response.status_code == 200
+    assert len(mail.outbox) == 0
 
 
 @pytest.mark.django_db
