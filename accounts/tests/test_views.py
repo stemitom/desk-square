@@ -35,7 +35,7 @@ def api_client_with_credentials(db, api_client):
 
 @pytest.fixture
 def password():
-    return "strong-test-pass"
+    return Faker().password()
 
 
 @pytest.fixture
@@ -215,7 +215,7 @@ def test_change_password_200(
 
 @pytest.mark.django_db
 def test_change_password_wrong_old_password_400(
-    auto_login_user_jwt_response, password, fake_password, api_client
+    auto_login_user_jwt_response, fake_password, api_client
 ):
     auto_login_user_jwt_response()
     response = api_client.put(
@@ -273,8 +273,3 @@ def test_password_reset_request_register_invalid_email_200(
     response = api_client.post(url, data={"email": fake_email})
     assert response.status_code == 200
     assert len(mail.outbox) == 0
-
-
-@pytest.mark.django_db
-def test_activation_mail_200(api_client):
-    pass

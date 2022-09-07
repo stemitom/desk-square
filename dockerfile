@@ -15,20 +15,15 @@ RUN apt-get update \
 # install poetry
 RUN pip install poetry==1.1.13
 
-# install project dependencies
-COPY poetry.lock pyproject.toml ./
-# RUN poetry install --no-dev --no-root
-RUN poetry config virtualenvs.create false \
-  && poetry install --no-interaction --no-ansi
+# copy project
+COPY . .
 
-# copy entrypoint and script to confirm postgres and rabbit are healthy
-COPY ./wait-for-postgres.sh .
-COPY ./entrypoint.sh .
+# add executable permissions to wait-for-postgres and entrypoint
 RUN chmod +x /code/wait-for-postgres.sh
 RUN chmod +x /code/entrypoint.sh
 
-# copy project
-COPY . .
-RUN poetry install --no-dev
+# RUN poetry install system
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-interaction --no-ansi
 
 ENTRYPOINT ["/code/entrypoint.sh"]
