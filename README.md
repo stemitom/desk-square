@@ -37,3 +37,9 @@ The steps below will get you up and running with a local development environment
       - [x] Change Password (3)
       - [x] Request Activation (1) 
       - [x] Request Password Reset (2) 
+  - [ ] Add (devops) services 
+      - [ ] Grafana
+      - [ ] Prometheus
+      - [ ] Loki
+      - [ ] Supervisord for managing processes
+      - [ ] Gunicorn 
