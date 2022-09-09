@@ -4,8 +4,8 @@ import factory.fuzzy
 import faker
 from django.utils import timezone
 
-from accounts.enums import UserPrefix
-from accounts.models import User
+from apps.accounts.enums import UserPrefix
+from apps.accounts.models import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):

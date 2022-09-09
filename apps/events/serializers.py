@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from timezone_field.rest_framework import TimeZoneSerializerField
 
-from events.models import Attendee, Event, Location, Tag, Ticket, TicketOrder
+from apps.events.models import Attendee, Event, Location, Tag, Ticket, TicketOrder
 
 
 class TicketSerializer(serializers.ModelSerializer):
