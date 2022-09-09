@@ -2,8 +2,8 @@ import datetime
 
 from django.test import TestCase
 
-from accounts.models import User
-from events.models import Event, Location, Tag
+from apps.accounts.models import User
+from apps.events.models import Event, Location, Tag
 
 
 class TestModels(TestCase):

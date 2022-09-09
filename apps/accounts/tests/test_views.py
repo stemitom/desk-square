@@ -10,7 +10,7 @@ from faker import Faker
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, aware_utcnow
 
-from accounts.tests.factories import UserFactory
+from apps.accounts.tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)
