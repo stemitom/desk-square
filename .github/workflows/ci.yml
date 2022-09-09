@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v2
@@ -46,6 +47,7 @@ jobs:
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
+
       - name: Run Code Analysis
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
@@ -55,7 +57,7 @@ jobs:
         run: poetry run make lint
 
    test:
-     if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
+    if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
     needs: ['lint']
     runs-on: ubuntu-latest
 
