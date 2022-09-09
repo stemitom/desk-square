@@ -8,7 +8,7 @@ on:
   pull_request:
     branches:
       - main
-      types: [opened, synchronize, closed]
+    types: [opened, synchronize, closed]
 
 jobs:
    lint:
