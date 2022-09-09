@@ -2,18 +2,19 @@ name: Desk-Square CI
 
 on:
   push:
+    branches:
+      - "**"
+      - "!main"
   pull_request:
     branches:
       - main
-      - develop
+      types: [opened, synchronize, closed]
 
 jobs:
    lint:
+     if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
     runs-on: ubuntu-latest
     steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Set up python
@@ -22,18 +23,12 @@ jobs:
         with:
           python-version: 3.9
 
-      #----------------------------------------------
-      #  -----  load cached poetry  -----
-      #----------------------------------------------
       - name: Load cached Poetry installation
         uses: actions/cache@v2
         with:
           path: ~/.local
           key: poetry-0
 
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
@@ -41,9 +36,6 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v2
@@ -51,16 +43,9 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
-
-      #----------------------------------------------
-      #              run linters
-      #----------------------------------------------
       - name: Run Code Analysis
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
@@ -70,12 +55,10 @@ jobs:
         run: poetry run make lint
 
    test:
+     if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
     needs: ['lint']
     runs-on: ubuntu-latest
 
-    #---------------------------------------------------
-    #       add the services needed to run the tests
-    #---------------------------------------------------
     services:
       postgres:
         image: postgres:12.11
@@ -88,9 +71,6 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Set up python
@@ -99,18 +79,12 @@ jobs:
         with:
           python-version: 3.9
 
-      #----------------------------------------------
-      #  -----  load cached poetry  -----
-      #----------------------------------------------
       - name: Load cached Poetry installation
         uses: actions/cache@v2
         with:
           path: ~/.local
           key: poetry-0
 
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
@@ -118,9 +92,6 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v2
@@ -128,16 +99,10 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
-      #----------------------------------------------
-      #              run test suite
-      #----------------------------------------------
       - name: Run tests
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
