@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 f"Password minimum length allowed is {password_minimum_length}"
             )
+        return password
 
     def create(self, validated_data):
         data = {

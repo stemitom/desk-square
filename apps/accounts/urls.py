@@ -8,7 +8,7 @@ urlpatterns = [
     path(
         "list-users",
         views.ListUsersView.as_view(),
-        name="list-users",
+        name="list",
     ),
     path(
         "signup",

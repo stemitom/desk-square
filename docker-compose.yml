@@ -1,13 +1,29 @@
 version: "3.9"
    
 services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+      - mailhog
+      - rabbitmq
+
   db:
-    image: postgres
+    image: postgres:14
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./pg-scripts:/docker-entrypoint-initdb.d
-    env_file:
-      - .env.dev
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     ports:
       - "5433:5432"
 
@@ -16,8 +32,10 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     restart: always
-    env_file:
-      - .env.dev
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_VHOST=/
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -28,7 +46,7 @@ services:
     volumes:
       - .:/code
     env_file:
-      - .env.dev
+      - ./.env.dev
     depends_on:
       - rabbitmq
 
@@ -38,9 +56,10 @@ services:
     volumes:
       - .:/code
     env_file:
-      - .env.dev
+      - ./.env.dev
     depends_on:
       - rabbitmq
+      - celery-worker
 
   mailhog:
     image: mailhog/mailhog
@@ -49,21 +68,6 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
-
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env.dev
-    depends_on:
-      - db
-      - mailhog
-      - rabbitmq
-    
 
 volumes:
   db-data:
