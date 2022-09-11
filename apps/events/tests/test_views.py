@@ -1,5 +1,5 @@
 import pytest
-import json
+
 
 @pytest.fixture(autouse=True)
 def email_backend_setup(settings):
