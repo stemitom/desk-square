@@ -47,6 +47,10 @@ class SignupView(generics.CreateAPIView):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_async_account_activation_mail(user.pk, self.request)
+
 
 class LoginView(TokenObtainPairView):
     serializer_class = LogInSerializer
