@@ -8,7 +8,6 @@ authors = ["Temiloluwa Samuel <65780579+stemitom@users.noreply.github.com>"]
 python = "^3.9.12"
 djangorestframework = "^3.13.1"
 djangorestframework-simplejwt = "^5.1.0"
-setuptools = "^62.3.2"
 six = "^1.16.0"
 django-shell-plus = "^1.1.7"
 decouple = "^0.0.7"
