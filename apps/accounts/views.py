@@ -6,14 +6,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import (
+from apps.accounts.serializers import (
     ChangePasswordSerializer,
     LogInSerializer,
     RefreshTokenSerializer,
     UserSerializer,
 )
-from .tasks import send_async_account_activation_mail, send_async_password_reset_mail
-from .utils import verify_uid_and_token
+from apps.accounts.tasks import send_async_account_activation_mail, send_async_password_reset_mail
+from apps.accounts.utils import verify_uid_and_token
 
 
 class ListUsersView(generics.ListAPIView):

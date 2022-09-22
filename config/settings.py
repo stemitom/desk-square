@@ -53,9 +53,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Local Apps
-    "apps.accounts",
-    "apps.events",
-    "apps.payments",
+    "apps.accounts.apps.AccountsConfig",
+    "apps.events.apps.EventsConfig",
+    "apps.payments.apps.PaymentsConfig",
     # Third Party Apps
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
