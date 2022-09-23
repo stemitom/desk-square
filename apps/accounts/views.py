@@ -12,7 +12,10 @@ from apps.accounts.serializers import (
     RefreshTokenSerializer,
     UserSerializer,
 )
-from apps.accounts.tasks import send_async_account_activation_mail, send_async_password_reset_mail
+from apps.accounts.tasks import (
+    send_async_account_activation_mail,
+    send_async_password_reset_mail,
+)
 from apps.accounts.utils import verify_uid_and_token
 
 

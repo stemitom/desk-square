@@ -42,7 +42,7 @@ services:
 
   celery-worker:
     build: .
-    command: poetry run celery -A config worker -l INFO
+    command: celery -A config worker -l INFO
     volumes:
       - .:/code
     env_file:
@@ -52,7 +52,7 @@ services:
 
   celery-beat:
     build: .
-    command: poetry run celery -A config beat -l INFO
+    command: celery -A config beat -l INFO
     volumes:
       - .:/code
     env_file:
