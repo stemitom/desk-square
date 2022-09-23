@@ -130,10 +130,10 @@ CELERY_BEAT_SCHEDULE = {
 MIDDLEWARE = (
     ["django_prometheus.middleware.PrometheusBeforeMiddleware"]
     + MIDDLEWARE
-    + ["django_prometheus.middleware.PrometheusAfterMiddleware"]
+    + ["django_prometheus.middleware.PrometheusAfterMiddleware",]
 )
 
-INSTALLED_APPS += ["django_prometheus"]
+INSTALLED_APPS += ["django_prometheus",]
 
 
 AUTHENTICATION_BACKENDS = (
